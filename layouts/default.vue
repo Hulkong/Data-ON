@@ -1,0 +1,174 @@
+<template>
+  <div>
+    <div id="doc" 
+          :class="[{'main': main_class},
+                   {'sub': !main_class}, 
+                   {'board': board_class}]"
+    ><!-- main / sub -->
+      <!-- s : #header-wrap //-->
+      <include-header :keyword="keyword" v-if="!main_class || (main_class && msec01H <= pageY)"></include-header>
+      <!-- e : #header-wrap //-->
+      <!-- s: fog1 -->
+      <div class='header-slider-ovclick' v-show="headerFog" @click="closeFog('pop')"/>
+      <!-- e: fog1 -->
+      <!-- s : #container-wrap //-->
+      
+      <div id="container-wrap" 
+           :class="[{'mcontainer': main_class}, 
+                    {'scontainer': !main_class}, 
+                    {'div-cont': !main_class}, 
+                    {'full': board_class}]"
+      >
+        <!-- s: fog2 -->
+        <div class='content-slider-ovclick' v-if="bodyFog"  @click="closeFog('')"/>
+        <!-- e: fog2 -->
+        <!-- s: snb-wrap-->
+        <include-filter v-if="search_class"></include-filter>
+        <!-- e: snb-wrap-->
+        <Nuxt :nuxtChildKey="routerViewKey"  />
+      </div>
+      <popup-preview v-if="getPreviewOn"></popup-preview>
+      <popup-allfilter v-if="getAllFilterOn"></popup-allfilter>
+      <!-- s : layer-wrap selBox -->
+      <include-sel-box v-show="search_class && getMobileOrderBoxOn"></include-sel-box>
+      <!-- e : layer-wrap selBox -->
+      <!-- e : #container-wrap //-->
+      <!-- s : #footer-wrap //-->
+      <include-footer></include-footer>
+      <!-- e : #footer-wrap //-->
+      <a  href='javascript:void(0);' 
+          @click="$scrollToTop" 
+          class='top-btn over' 
+          v-if="(msec01H <= pageY)"
+      >
+        <span class='blind'>top</span>
+      </a>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+export default {
+  data : function(){
+    return {
+      main_class: true,
+      search_class: false,
+      board_class: false,
+      keyword: '',
+      bodyFog: false, // 모바일 필터 검은 배경
+      headerFog: false ,    // 팝업 검은 배경
+      docW:0,     // 화면 widht 사이즈
+      msec01H:0,   // 첫번째 페이지의 높이
+      pageY:0,      // 현재 보고있는 높이
+      
+    }
+  },
+  computed:{
+    ...mapGetters('search', [
+      "getMobileOrderBoxOn",				// [모바일] 필터 on/off
+      'getPreviewOn',				// preview popup on/off
+      'getAllFilterOn'      // allfilter popup on/off
+    ]),
+    routerViewKey(){
+      this.setStyles(this.$route.matched[0].path);
+    }
+  },
+  mounted(){
+    var that = this;
+    this.msec01H = $('.msec-01').outerHeight();
+    
+    // 화면 사이즈 조절
+		jQuery(function($){
+			that.docW = $('#doc').outerWidth();
+			$(window).resize(function() {
+				if(this.resizeTO) {
+					clearTimeout(this.resizeTO);
+				}
+				this.resizeTO = setTimeout(function() {
+					$(this).trigger('resizeEnd');
+				}, 10);
+			});
+		});	
+		$(window).on('resizeEnd', function() {
+			that.docW = $('#doc').outerWidth();
+		});
+
+		$(window).on('load', function() { 
+			that.docW = $('#doc').outerWidth();
+    });
+    
+    $(window).on('scroll', function(){
+      that.pageY = this.pageYOffset;
+    })
+  },
+  created(){
+    var that = this;
+    this.$nuxt.$on('default-fog',(use, type)=>{
+      // 사용위치: search/index.vue, preview-popup
+      if(type !== undefined && type == 'pop') that.headerFog = use;
+      else that.bodyFog = use;
+
+      // 스크롤 처리
+      if(use) $('html').css({'overflow':'hidden'});
+      else $('html').css({'overflow':'auto'});
+		})
+	},
+	beforeDestroy(){
+		this.$nuxt.$off('default-fog');
+	},
+  methods: {
+    ...mapMutations("search", [
+			"setPreview",			      // 미리보기 화면  on/off
+      "setMobileOrderBoxOn",	// 검색 파라미터 추가
+      "setAllFilter",         // 필터 전체 검색
+      "setMobileFilterOn",    // 모바일 필터 창 
+		]),
+    /**
+     * 검은 배경 클릭시 닫기
+     */
+    closeFog: function(type){
+      if(type == 'pop'){   // 정렬
+        this.setMobileOrderBoxOn(false);
+        this.setPreview(false);
+        this.setAllFilter({'open':false, 'list_id': ''});
+
+        $nuxt.$emit('default-fog', false, 'pop');
+      }else{      // 팝업
+        this.setMobileFilterOn(false);
+        $nuxt.$emit('default-fog', false);
+      }
+
+    },
+    /**
+     * 화면별 스타일 적용
+     */
+    setStyles: function(path){
+      if(path == "/" || path == ''){
+        this.main_class = true;
+        this.search_class = false;
+        this.board_class = true;
+      } 
+      else if(path.indexOf("/notice") != -1 ) {
+        this.main_class = false;
+        this.search_class = false;
+        this.board_class = true;
+      }
+      else if(path.indexOf("/search") != -1 ) {
+        this.keyword = this.$route.query.keyword;
+        this.main_class = false;
+        this.board_class = false;
+        this.search_class = true;
+      }
+      else{
+        this.main_class = false;
+      } 
+    },
+  }
+}
+</script>
+<style>
+.act_hide {
+  display:none;
+}
+</style>
