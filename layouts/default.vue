@@ -200,8 +200,8 @@ export default {
 }
 
 .__bottom-buttons .contact-button {
-  height: 44px;
-  width: 44px;
+  width: 60px;
+  height: 60px;
   background-image: url(/images/ask/bt-inquire.png);
   background-repeat: no-repeat;
   background-size: contain;
@@ -212,7 +212,7 @@ export default {
 .contact {
   z-index: 2500;
   background: white;
-  margin-bottom: -45px;
+  margin-bottom: -60px;
 }
 
 .__bottom-buttons .contact-button:hover {
@@ -222,6 +222,17 @@ export default {
 .__bottom-buttons .top-btn.over {
   position: static;
 }
+
+@media only screen and (max-width: 999px) {
+  .contact {
+    margin-bottom: -45px;
+  }
+  .__bottom-buttons .contact-button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 
 @media (min-width: 320px) and (max-width: 480px) {
   .__bottom-buttons .contact-button {

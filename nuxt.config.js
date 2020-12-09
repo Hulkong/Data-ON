@@ -43,7 +43,8 @@ export default {
       href: '/favicon.ico'
     }],
     script: [{
-      src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit'
+      src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit',
+      defer: true 
     }]
   },
 

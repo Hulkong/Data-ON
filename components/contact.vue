@@ -1,8 +1,8 @@
 <template>
   <div
-    :style="{visibility: isShow ? 'visible' : 'hidden'}"
+    :style="{ visibility: isShow ? 'visible' : 'hidden' }"
     class="contact"
-    :class="{active: isShow}"
+    :class="{ active: isShow }"
   >
     <!-- header -->
     <div class="header">
@@ -16,16 +16,30 @@
         <!-- name -->
         <div class="subbox name">
           <span class="hd">이름</span>
-          <input type="text" name="name" placeholder="이름을 작성해주세요 :)" v-model="name.value" />
-          <p class="errorMsg" v-show="name.error.isError">{{ name.error.msg }}</p>
+          <input
+            type="text"
+            name="name"
+            placeholder="이름을 작성해주세요 :)"
+            v-model="name.value"
+          />
+          <p class="errorMsg" v-show="name.error.isError">
+            {{ name.error.msg }}
+          </p>
         </div>
         <!-- name -->
 
         <!-- email -->
         <div class="subbox eamil">
           <span class="hd">이메일</span>
-          <input type="text" name="email" placeholder="메일 주소를 작성해주세요 :)" v-model="email.value" />
-          <p class="errorMsg" v-show="email.error.isError">{{ email.error.msg }}</p>
+          <input
+            type="text"
+            name="email"
+            placeholder="메일 주소를 작성해주세요 :)"
+            v-model="email.value"
+          />
+          <p class="errorMsg" v-show="email.error.isError">
+            {{ email.error.msg }}
+          </p>
         </div>
         <!-- email -->
 
@@ -50,7 +64,9 @@
             placeholder="의견 내용을 남겨주세요."
             v-model="textarea.value"
           />
-          <p class="errorMsg" v-show="textarea.error.isError">{{ textarea.error.msg }}</p>
+          <p class="errorMsg" v-show="textarea.error.isError">
+            {{ textarea.error.msg }}
+          </p>
         </div>
         <!-- textarea -->
 
@@ -68,7 +84,9 @@
           <label for="cb1"></label>
           <span>개인정보 수집 및 이용 동의(필수)</span>
           <span class="detail">[자세히보기]</span>
-          <span class="errorMsg" v-show="checkbox.error.isError">{{ checkbox.error.msg }}</span>
+          <span class="errorMsg" v-show="checkbox.error.isError">{{
+            checkbox.error.msg
+          }}</span>
         </div>
         <!-- checkbox -->
       </div>
@@ -81,7 +99,7 @@
     </div>
     <!-- contents -->
 
-    <div class="footer" :class="{after: isShowSecond}">
+    <div class="footer" :class="{ after: isShowSecond }">
       <div class="button send" @click="clickSendButton">
         <span>보내기</span>
       </div>
@@ -89,7 +107,9 @@
         <span>닫기</span>
       </div>
     </div>
-    <p class="errorMsg server" v-show="server.error.isError">{{ server.error.msg }}</p>
+    <p class="errorMsg server" v-show="server.error.isError">
+      {{ server.error.msg }}
+    </p>
   </div>
 </template>
 
@@ -98,8 +118,8 @@ export default {
   props: {
     isShow: {
       default: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     title: "의견 남기기",
@@ -110,57 +130,63 @@ export default {
       value: null,
       error: {
         isError: false,
-        msg: "10자이내로 작성해주세요"
-      }
+        msg: "10자이내로 작성해주세요",
+      },
     },
     email: {
       value: null,
       error: {
         isError: false,
-        msg: "이메일 형식에 맞지 않습니다"
-      }
+        msg: "이메일 형식에 맞지 않습니다",
+      },
     },
     selectbox: {
       value: 0,
       error: {
         isError: false,
-        msg: ""
-      }
+        msg: "",
+      },
     },
     checkbox: {
       value: false,
       error: {
         isError: false,
-        msg: "필수항목입니다"
-      }
+        msg: "필수항목입니다",
+      },
     },
     textarea: {
       value: null,
       error: {
         isError: false,
-        msg: "필수항목입니다"
-      }
+        msg: "필수항목입니다",
+      },
     },
     server: {
       value: null,
       error: {
         isError: false,
-        msg: "서버와 연결이 끊어졌습니다. 다시 시도해주세요."
-      }
-    }
+        msg: "서버와 연결이 끊어졌습니다. 다시 시도해주세요.",
+      },
+    },
   }),
 
   watch: {
     "name.value": _.debounce(function() {
-      this.validTarget(this.name, "이름을 입력해주세요");
-    }, 600)
+      if (this.validTarget(this.name, "이름을 입력해주세요"))
+        this.validNameLimitTen(this.name);
+    }, 600),
+    "email.value": _.debounce(function() {
+      if (this.validTarget(this.email, "이메일을 입력해주세요"))
+        this.validEmail(this.email);
+    }, 600),
   },
 
   computed: {
     changeTitle() {
       return this.isShowSecond ? "접수 완료" : "의견 남기기";
-    }
+    },
   },
+
   methods: {
     /**
      * @description 테스트 파라미터 자동입력
@@ -269,8 +295,8 @@ export default {
       return new Promise((resolve, reject) => {
         axios
           .post(" /api/inquires/", params)
-          .then(response => resolve(response.data))
-          .catch(error => reject(error));
+          .then((response) => resolve(response.data))
+          .catch((error) => reject(error));
       });
     },
 
@@ -295,10 +321,10 @@ export default {
         name: this.name.value,
         email: this.email.value,
         type: this.selectbox.value,
-        content: this.textarea.value
+        content: this.textarea.value,
       })
         .then(() => (this.isShowSecond = true))
-        .catch(err => {
+        .catch((err) => {
           this.setErrorMsg(this.server, this.server.error.msg);
           this.isShowSecond = false;
         });
@@ -310,7 +336,7 @@ export default {
     clickCloseButton() {
       this.init();
       this.$emit("close");
-    }
+    },
   },
 
   beforeCreate() {},
@@ -320,12 +346,51 @@ export default {
     this.setTest();
   },
   beforeDestroy() {},
-  destroyed() {}
+  destroyed() {},
 };
 </script>
 
 <style scoped>
+/*
+.text-color {
+  color: #fff;
+}
+.background-color {
+  color: #0091e1;
+}
+.error-color {
+  color: #ff2121;
+}
+.accent-color {
+  color: #333333;
+}
+.font-xl {
+  font:  normal normal bold 1.375rem/1.25rem Noto Sans CJK KR;
+}
+.font-l {
+  font: normal normal normal 1.125rem/2rem Noto Sans CJK KR;
+}
+.font-m {
+  font: normal normal normal 1rem/1.25rem Noto Sans CJK KR;
+}
+.font-s {
+  font: normal normal bold 0.875rem/1.25rem Noto Sans CJK KR;
+}
+.font-s-s {
+  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;
+} 
+.font-xs {
+  font: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;
+}
+.font-xxs {
+  font: normal normal normal 0.625rem/1.25rem Noto Sans CJK KR;
+}
+.font-xxs-s {
+  font: normal normal normal 0.625rem/1.125rem Noto Sans CJK KR;
+}
+*/
 .contact {
+  /*
   --text-color: #fff;
   --background-color: #0091e1;
   --error-color: #ff2121;
@@ -338,6 +403,7 @@ export default {
   --font-XS: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;
   --font-XXS: normal normal normal 0.625rem/1.25rem Noto Sans CJK KR;
   --font-XXS-S: normal normal normal 0.625rem/1.125rem Noto Sans CJK KR;
+  */
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -349,6 +415,27 @@ export default {
   border-radius: 14px;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #0091E1;
+      border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background:#005583;
+}
+
 /* input 기본 스타일 초기화 */
 input,
 select {
@@ -357,7 +444,7 @@ select {
   border-width: 0px;
   border: none;
   color: #919294;
-  font: var(--font-M);
+  font: normal normal normal 1rem/1.25rem Noto Sans CJK KR;
 }
 
 select {
@@ -369,15 +456,18 @@ select {
   background-position-y: 3px;
   -webkit-appearance: none;
   -moz-appearance: none;
+  appearance: none;
   cursor: pointer;
 }
+
+select::-ms-expand {display:none}
 
 textarea {
   width: 100%;
   height: 120px;
   overflow-y: scroll;
   border: 1px solid #707070;
-  font: var(--font-S-S);
+  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;;
   color: #919294;
   margin: 0px;
   padding: 10px;
@@ -419,8 +509,8 @@ input[id="cb1"] {
 
 .header span {
   vertical-align: middle;
-  color: var(--text-color);
-  font: var(--font-XL);
+  color: #fff;
+  font: normal normal bold 1.375rem/1.25rem Noto Sans CJK KR;
 }
 
 .contents {
@@ -439,13 +529,13 @@ input[id="cb1"] {
 
 .contents .after p {
   padding: 22px 0 59px 0;
-  font: var(--font-XL);
+  font: normal normal bold 1.375rem/1.25rem Noto Sans CJK KR;
   color: #008bd9;
 }
 
 .contents .after span {
   display: inline-block;
-  font: var(--font-L);
+  font: normal normal normal 1.125rem/2rem Noto Sans CJK KR;
   color: #656565;
 }
 
@@ -490,11 +580,11 @@ input[id="cb1"] {
   vertical-align: super;
   padding-left: 11px;
   color: #656565;
-  font: var(--font-XXS-S);
+  font: normal normal normal 0.625rem/1.125rem Noto Sans CJK KR;;
 }
 
 .subbox.checkbox span.detail {
-  font: var(--font-XS);
+  font: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;;
   cursor: pointer;
 }
 
@@ -538,12 +628,12 @@ input[id="cb1"] {
 .footer .button.cancel {
   float: right;
   border: 1px solid #0091e1;
-  background-color: var(--text-color);
+  background-color: #fff;
 }
 
 .footer .button span {
-  font: var(--font-S-S);
-  color: var(--text-color);
+  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;;
+  color: #fff;
   vertical-align: middle;
 }
 
@@ -553,21 +643,21 @@ input[id="cb1"] {
 
 .errorMsg {
   /* visibility: hidden; */
-  font: var(--font-XXS);
-  color: var(--error-color);
+  font: normal normal normal 0.625rem/1.25rem Noto Sans CJK KR;;
+  color: #ff2121;
   position: absolute;
   left: 135px;
 }
 
 .subbox.textarea .errorMsg,
 .subbox.checkbox .errorMsg {
-  color: var(--error-color);
+  color: #ff2121;
   position: static;
 }
 
 .errorMsg.server {
   text-align: center;
-  font: var(--font-M);
+  font: normal normal normal 1rem/1.25rem Noto Sans CJK KR;
   position: static;
   padding-top: 16px;
 }
@@ -636,7 +726,7 @@ input[id="cb1"] {
   }
 
   .footer.after .cancel span {
-    color: var(--text-color);
+    color: #fff;
   }
 
   .header {
