@@ -1,17 +1,12 @@
 <template>
-  <contact :selects="selects"></contact>
+  <div>
+    <contact></contact>
+  </div>
 </template>
 
 <script>
-import { VueReCaptcha } from "vue-recaptcha-v3";
 export default {
-  data: () => ({
-    selects: [
-      { value: "오류신고" },
-      { value: "오류신고" },
-      { value: "오류신고" }
-    ]
-  }),
+  data: () => ({}),
 
   props: {},
 

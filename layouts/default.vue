@@ -1,31 +1,34 @@
 <template>
   <div>
-    <div id="doc" 
-          :class="[{'main': main_class},
+    <div
+      id="doc"
+      :class="[{'main': main_class},
                    {'sub': !main_class}, 
                    {'board': board_class}]"
-    ><!-- main / sub -->
+    >
+      <!-- main / sub -->
       <!-- s : #header-wrap //-->
       <include-header :keyword="keyword" v-if="!main_class || (main_class && msec01H <= pageY)"></include-header>
       <!-- e : #header-wrap //-->
       <!-- s: fog1 -->
-      <div class='header-slider-ovclick' v-show="headerFog" @click="closeFog('pop')"/>
+      <div class="header-slider-ovclick" v-show="headerFog" @click="closeFog('pop')" />
       <!-- e: fog1 -->
       <!-- s : #container-wrap //-->
-      
-      <div id="container-wrap" 
-           :class="[{'mcontainer': main_class}, 
+
+      <div
+        id="container-wrap"
+        :class="[{'mcontainer': main_class}, 
                     {'scontainer': !main_class}, 
                     {'div-cont': !main_class}, 
                     {'full': board_class}]"
       >
         <!-- s: fog2 -->
-        <div class='content-slider-ovclick' v-if="bodyFog"  @click="closeFog('')"/>
+        <div class="content-slider-ovclick" v-if="bodyFog" @click="closeFog('')" />
         <!-- e: fog2 -->
         <!-- s: snb-wrap-->
         <include-filter v-if="search_class"></include-filter>
         <!-- e: snb-wrap-->
-        <Nuxt :nuxtChildKey="routerViewKey"  />
+        <Nuxt :nuxtChildKey="routerViewKey" />
       </div>
       <popup-preview v-if="getPreviewOn"></popup-preview>
       <popup-allfilter v-if="getAllFilterOn"></popup-allfilter>
@@ -36,139 +39,193 @@
       <!-- s : #footer-wrap //-->
       <include-footer></include-footer>
       <!-- e : #footer-wrap //-->
-      <a  href='javascript:void(0);' 
-          @click="$scrollToTop" 
-          class='top-btn over' 
-          v-if="(msec01H <= pageY)"
-      >
-        <span class='blind'>top</span>
-      </a>
+      <div class="__bottom-buttons">
+        <contact :isShow="isShowContact" @close="closeContact"></contact>
+        <div class="contact-button" @click="isShowContact = true"></div>
+        <a
+          href="javascript:void(0);"
+          @click="$scrollToTop"
+          class="top-btn over"
+          v-show="(msec01H <= pageY)"
+        >
+          <span class="blind">top</span>
+        </a>
+      </div>
     </div>
+    <information></information>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 export default {
-  data : function(){
+  data: function() {
     return {
+      isShowContact: false, // Contact 컴포넌트 visible
       main_class: true,
       search_class: false,
       board_class: false,
-      keyword: '',
+      keyword: "",
       bodyFog: false, // 모바일 필터 검은 배경
-      headerFog: false ,    // 팝업 검은 배경
-      docW:0,     // 화면 widht 사이즈
-      msec01H:0,   // 첫번째 페이지의 높이
-      pageY:0,      // 현재 보고있는 높이
-      
-    }
+      headerFog: false, // 팝업 검은 배경
+      docW: 0, // 화면 widht 사이즈
+      msec01H: 0, // 첫번째 페이지의 높이
+      pageY: 0 // 현재 보고있는 높이
+    };
   },
-  computed:{
-    ...mapGetters('search', [
-      "getMobileOrderBoxOn",				// [모바일] 필터 on/off
-      'getPreviewOn',				// preview popup on/off
-      'getAllFilterOn'      // allfilter popup on/off
+  computed: {
+    ...mapGetters("search", [
+      "getMobileOrderBoxOn", // [모바일] 필터 on/off
+      "getPreviewOn", // preview popup on/off
+      "getAllFilterOn" // allfilter popup on/off
     ]),
-    routerViewKey(){
+    routerViewKey() {
       this.setStyles(this.$route.matched[0].path);
     }
   },
-  mounted(){
+  mounted() {
     var that = this;
-    this.msec01H = $('.msec-01').outerHeight();
-    
-    // 화면 사이즈 조절
-		jQuery(function($){
-			that.docW = $('#doc').outerWidth();
-			$(window).resize(function() {
-				if(this.resizeTO) {
-					clearTimeout(this.resizeTO);
-				}
-				this.resizeTO = setTimeout(function() {
-					$(this).trigger('resizeEnd');
-				}, 10);
-			});
-		});	
-		$(window).on('resizeEnd', function() {
-			that.docW = $('#doc').outerWidth();
-		});
+    this.msec01H = $(".msec-01").outerHeight();
 
-		$(window).on('load', function() { 
-			that.docW = $('#doc').outerWidth();
+    // 화면 사이즈 조절
+    jQuery(function($) {
+      that.docW = $("#doc").outerWidth();
+      $(window).resize(function() {
+        if (this.resizeTO) {
+          clearTimeout(this.resizeTO);
+        }
+        this.resizeTO = setTimeout(function() {
+          $(this).trigger("resizeEnd");
+        }, 10);
+      });
     });
-    
-    $(window).on('scroll', function(){
+    $(window).on("resizeEnd", function() {
+      that.docW = $("#doc").outerWidth();
+    });
+
+    $(window).on("load", function() {
+      that.docW = $("#doc").outerWidth();
+    });
+
+    $(window).on("scroll", function() {
       that.pageY = this.pageYOffset;
-    })
+    });
   },
-  created(){
+  created() {
     var that = this;
-    this.$nuxt.$on('default-fog',(use, type)=>{
+    this.$nuxt.$on("default-fog", (use, type) => {
       // 사용위치: search/index.vue, preview-popup
-      if(type !== undefined && type == 'pop') that.headerFog = use;
+      if (type !== undefined && type == "pop") that.headerFog = use;
       else that.bodyFog = use;
 
       // 스크롤 처리
-      if(use) $('html').css({'overflow':'hidden'});
-      else $('html').css({'overflow':'auto'});
-		})
-	},
-	beforeDestroy(){
-		this.$nuxt.$off('default-fog');
-	},
+      if (use) $("html").css({ overflow: "hidden" });
+      else $("html").css({ overflow: "auto" });
+    });
+  },
+  beforeDestroy() {
+    this.$nuxt.$off("default-fog");
+  },
   methods: {
     ...mapMutations("search", [
-			"setPreview",			      // 미리보기 화면  on/off
-      "setMobileOrderBoxOn",	// 검색 파라미터 추가
-      "setAllFilter",         // 필터 전체 검색
-      "setMobileFilterOn",    // 모바일 필터 창 
-		]),
+      "setPreview", // 미리보기 화면  on/off
+      "setMobileOrderBoxOn", // 검색 파라미터 추가
+      "setAllFilter", // 필터 전체 검색
+      "setMobileFilterOn" // 모바일 필터 창
+    ]),
+
     /**
      * 검은 배경 클릭시 닫기
      */
-    closeFog: function(type){
-      if(type == 'pop'){   // 정렬
+    closeFog: function(type) {
+      if (type == "pop") {
+        // 정렬
         this.setMobileOrderBoxOn(false);
         this.setPreview(false);
-        this.setAllFilter({'open':false, 'list_id': ''});
+        this.setAllFilter({ open: false, list_id: "" });
 
-        $nuxt.$emit('default-fog', false, 'pop');
-      }else{      // 팝업
+        $nuxt.$emit("default-fog", false, "pop");
+      } else {
+        // 팝업
         this.setMobileFilterOn(false);
-        $nuxt.$emit('default-fog', false);
+        $nuxt.$emit("default-fog", false);
       }
-
     },
     /**
      * 화면별 스타일 적용
      */
-    setStyles: function(path){
-      if(path == "/" || path == ''){
+    setStyles: function(path) {
+      if (path == "/" || path == "") {
         this.main_class = true;
         this.search_class = false;
         this.board_class = true;
-      } 
-      else if(path.indexOf("/notice") != -1 ) {
+      } else if (path.indexOf("/notice") != -1) {
         this.main_class = false;
         this.search_class = false;
         this.board_class = true;
-      }
-      else if(path.indexOf("/search") != -1 ) {
+      } else if (path.indexOf("/search") != -1) {
         this.keyword = this.$route.query.keyword;
         this.main_class = false;
         this.board_class = false;
         this.search_class = true;
-      }
-      else{
+      } else {
         this.main_class = false;
-      } 
+      }
     },
+
+    /**
+     * @description close contact layout
+     */
+    closeContact() {
+      this.isShowContact = false;
+    }
   }
-}
+};
 </script>
-<style>
+<style scoped>
 .act_hide {
-  display:none;
+  display: none;
+}
+
+.__bottom-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-around;
+  bottom: 20px;
+  right: 0;
+  padding-right: 23px;
+  position: fixed;
+  z-index: 2500;
+}
+
+.__bottom-buttons .contact-button {
+  height: 44px;
+  width: 44px;
+  background-image: url(/images/ask/bt-inquire.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+
+.contact {
+  z-index: 2500;
+  background: white;
+  margin-bottom: -45px;
+}
+
+.__bottom-buttons .contact-button:hover {
+  background-image: url(/images/ask/bt-inquire-hover.png);
+}
+
+.__bottom-buttons .top-btn.over {
+  position: static;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .__bottom-buttons .contact-button {
+    background-image: url(/images/ask/bt-inquire-mobile.png);
+  }
 }
 </style>
