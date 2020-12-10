@@ -71,7 +71,7 @@
         <div class="is-btm">
             <a  v-if="getPreviewInfoLen > 0 && getPreviewInfo.tbattachFiles.length > 0"
                 href="javascript:void(0);" 
-                @click="$downloadFile(getPreviewInfo.tbattachFiles,addDownCnt)"
+                @click="$downloadFile(getPreviewInfo.tbattachFiles,downCallback)"
                 class="down-btn preview-close" 
                 :class="(getPreviewInfo.dt_type?getPreviewInfo.dt_type.toLowerCase():'')"
             >
@@ -127,6 +127,13 @@ export default {
             this.getPreviewData(posts);
             
         },
+        downCallback: function(file){
+            // 구글 애널리틱스 추가
+            this.$sendGA(this,'미리보기 다운로드','다운로드', file.origin_nm);
+
+            // 다운로드 수 증가
+            this.addDownCnt(file.id);
+        }
     }
 }
 </script>

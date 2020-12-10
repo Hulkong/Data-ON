@@ -29,7 +29,7 @@
                                     :key="index"
                                     href="javascript:void(0);" 
                                     class="stxt file"
-                                    @click="$downloadFile(item)"
+                                    @click="$downloadFile(item, downCallback)"
                                 >
                                         {{item['origin_nm']}}
                                 </a>
@@ -90,7 +90,8 @@ export default {
         this.listParam = this.$route.query;
 	},
 	methods: {
-		...mapActions("board", ["getDetailData"]),
+        ...mapActions("board", ["getDetailData"]),
+        ...mapActions("search", ["addDownCnt"]),
 		/**
 		 * 초기 데이터 가져오기
 		 */
@@ -124,6 +125,13 @@ export default {
             if( typeof html !== 'undefined' && html !== null) html = marked(html);
             
             return html;
+        },
+        downCallback: function(file){
+            // 구글 애널리틱스 추가
+            this.$sendGA(this,'공지사항 다운로드','다운로드', file.origin_nm);
+
+            // 다운로드 수 증가
+            this.addDownCnt(file.id);
         }
 	}
 }

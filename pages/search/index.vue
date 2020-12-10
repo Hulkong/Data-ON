@@ -1,5 +1,5 @@
 <template>
-	<div id="contents">
+	<div id="contents" @click="closeOrder">
 		<loading-data :loading=getLoading></loading-data>
 		<!-- s: page-start//-->
 		<div class="u-tab01">
@@ -42,7 +42,7 @@
 				<div class="item" 
 					v-for="item in getList" 
 					:key="item.id"
-					:class="{'active':(detail_id == item.id)}"
+					:class="{'active':(detail_id.includes(item.id))}"
 				>
 					<!-- s : con -->
 					<div class="con info">
@@ -66,7 +66,8 @@
 
 							<!-- 키워드 -->
 							<p class="hash">
-								<span>#{{$cutText(item.dt_date,'년',4,0)}} {{$cutText(item.dt_date,'월',2,4)}} {{$cutText(item.dt_date,'일',2,6)}}</span>
+								<span>#{{$stringToDate(item.dt_date)}}</span>
+								<!-- <span>#{{$cutText(item.dt_date,'년',4,0)}} {{$cutText(item.dt_date,'월',2,4)}} {{$cutText(item.dt_date,'일',2,6)}}</span> -->
 								<span>#{{item.dt_organ}}</span>
 								<span>#{{item.dt_category}}</span>
 							</p>
@@ -109,19 +110,20 @@
 							<a href="javascript:void(0);" class="preview-btn" @click="openPopup('previewon',item.id, item.dt_type)"><span>미리보기</span></a>
 							<a  v-if="item.tbattachFiles !== undefined && item.tbattachFiles.length > 0 && item.dt_type"
 								href="javascript:void(0);" 
-								@click="$downloadFile(item.tbattachFiles, addDownCnt)"
+								@click="$downloadFile(item.tbattachFiles, downCallback)"
 								:class="(item.dt_type? item.dt_type.toLowerCase():'')+'-btn'"
 							>
 								<span>{{item.dt_type.toUpperCase()}}</span>
 							</a>
 							<a href="javascript:void(0);"  class="detail-btn"  @click="openDetail(item.id, item.dt_type)" >
-								<span v-if="detail_id == item.id">접기</span>
+								<span v-if="detail_id.includes(item.id)">접기</span>
 								<span v-else>자세히보기</span>
 							</a>
 						</div>
 					</div>
 					<!-- e : con -->
 					<!-- s : con -->
+					<!-- <transition name="slide"> -->
 					<transition name="slide">
 					<div class="con detail"  
 						 v-show="chkDetail(item.id)"
@@ -130,7 +132,6 @@
 						<!-- s: 평가 -->
 						<div class="apprs" v-if="item.tbresultEvaluation !== undefined && item.tbresultEvaluation !== null">
 							<p class="btxt"><span>데이터 </span>품질평가</p>
-							<!-- <div class="mgraph"></div> -->
 							<div class="mgraph" v-if="item.tbresultEvaluation !== undefined && item.tbresultEvaluation !== null">
 								<chart-radar
 									v-if="docW < 840 && chkDetail(item.id)"
@@ -229,22 +230,24 @@ export default {
 	},
 	data() {
 		return {
-			name: 'search',				// 페이지 명 
-			orderList:[					// 정렬순 리스트
+			name: 'search',							// 페이지 명 
+			orderList:[								// 정렬순 리스트
 				{'id':'accuracy', 'name':'정확도'},
 				{'id':'dt_down', 'name':'다운로드'},
 				{'id':'dt_date', 'name':'최신순'},
 				{'id':'dt_byte', 'name':'용량순'}
 			],
-			detail_id:0,				// 자세히 보기 - 보고있는 id
-			order_active: false,		// 정렬 리스트 on/off
-			category_name: 'title',		// 선택한 카테고리 명
+			detail_id: [],							// 자세히 보기 - 보고있는 id
+			order_active: false,					// 정렬 리스트 on/off
+			category_name: 'title',					// 선택한 카테고리 명
 			keyword: '',
-			pop_id: '',					// 미리보기 팝업 클릭시 리스트 id
-			docW: 0,					// 윈도우 size
-			pastePage: false,			// 붙여넣기해서 들어온 페이지(true)
-			searchCnt: 0,				// 검색 결과 페이지내의 검색수
-			dateForm: ['년', '월', '일']
+			pop_id: '',								// 미리보기 팝업 클릭시 리스트 id
+			docW: 0,								// 윈도우 size
+			pastePage: false,						// 붙여넣기해서 들어온 페이지(true)
+			searchCnt: 0,							// 검색 결과 페이지내의 검색수
+			dateFormat: ['년', '월', '일'],			// 업뎃날짜 포맷
+			contents_click: false,					// contents 영역 클릭 허용 여부
+
 		}
 	},
 	created(){
@@ -261,6 +264,7 @@ export default {
 				this.allRemoveFilter();
 			} 
 			
+			console.log(">>>");
 			// 검색
 			this.setSearchData();
 			this.searchCnt += 1;
@@ -287,7 +291,6 @@ export default {
 		this.keyword = this.$route.query.keyword;
 		const pasteGbn = this.$route.query.id;
 		
-		// console.log(pasteGbn);
 		if(pasteGbn !== undefined && pasteGbn > -1){
 			this.setKeyword(this.keyword);
 			// 복사한 url 붙여넣기한 거면 check	
@@ -298,11 +301,11 @@ export default {
 			// 일반 검색인 경우
 			// 전달받은 paramter 저장
 			if(Object.keys(this.$route.query).length > 1){
-				this.resetParam(this.$route.query);
-				$nuxt.$emit('search-search');
+				// this.resetParam(this.$route.query);
+				// $nuxt.$emit('search-search');
 			}else{
-				$nuxt.$emit('search-search', this.keyword);
 			}
+			$nuxt.$emit('search-search', this.keyword);
 			
 
 		}
@@ -315,7 +318,6 @@ export default {
 			window.addEventListener('resize', this.onResize);
 		});
 		
-
 
 	},
 	updated: function(){
@@ -349,30 +351,8 @@ export default {
 
 		// 상세보기 on/off
 		chkDetail: function(id){
-			if(this.detail_id == id) return true;
+			if(this.detail_id.includes(id)) return true;
 			else return false;
-		},
-		/**
-		 * @description 방사차트 그림
-		 * @param {String} name 레퍼런스 이름
-		 * @param {Array} data 차트 데이터
-		 * @param {Number} index 레퍼런스 배열 인덱스
-		 */
-		drawRadar(name = null, data = [], index = 0) {
-			if (!name) return;
-
-			if (data.length === 0) return;
-
-			const component = this.$refs[name][index];
-
-			// 컴포넌트가 없으면 리턴
-			if (!component) return;
-
-			const options = component.options;
-
-			component.copyData = JSON.stringify(data); // 깊은 복사
-			component.remove(); // 컴포넌트에 등록된 차트 제거하기
-			component.draw(); // 컴포넌트에 등록된 차트그리기
 		},
 		/**
 		 * 자세히 보기 버튼 클릭시
@@ -380,17 +360,20 @@ export default {
 		 * @param {*} type 파일 형식
  		 */
 		openDetail: function(id, type){
+			// 구글 애널리틱스 추가
+			this.$sendGA(this,'검색결과 자세히보기','자세히보기', id);
+
 			if('ZIP,zip'.indexOf(type) != -1){
 				alert("zip 형식의 데이터는 자세히보기를 제공하지않습니다.");
 				return false;
 			}
 
 			//버튼변경, 상세페이지on/off
-			if(this.detail_id == id){	// 닫기
-				this.detail_id = 0;
+			if(this.detail_id.includes(id)){	// 닫기
+				this.detail_id = this.detail_id.filter(d_id => d_id != id);
 			}else{						// 열기
-				this.detail_id = id;
-
+				this.detail_id.push(id);
+				// console.log("1");
 				// 영역 스크롤 생성
 				var that = $('.detail_'+id);
 				this.$setNiceScrolls(that.find('.nscrolls'));
@@ -441,6 +424,11 @@ export default {
 		 * 카테고리 클릭
 		 */
 		changeCategory: function(value){
+
+			// 구글 애널리틱스 추가
+			this.$sendGA(this,'검색결과 카테고리','클릭', value);
+
+			// 카테고리 저장
 			this.setCategory(value);
 			$nuxt.$emit('search-search');
 		},
@@ -448,9 +436,10 @@ export default {
 		 * 정렬 박스 open
 		 */
 		openSelBox: function(){
+			var that = this;
 			var bodyWidth = document.documentElement.clientWidth; 
 			if(bodyWidth > 999){
-				this.order_active = true;
+				this.order_active = !this.order_active;
 			}else{
 				// include-selbox 컴포넌트 open 
 				$nuxt.$emit('default-fog', true, 'pop');
@@ -462,9 +451,26 @@ export default {
 		 * 정렬 선택 
 		 */
 		changeOrderby: function(id, name){
+			// 구글 애널리틱스 추가
+			this.$sendGA(this, '리스트 정렬_pc', '클릭', name);
+
+			// selectbox 닫기
 			this.order_active = false;
+			this.contents_click = false;
+			// 정렬 변경 및 닫기
 			this.setOrderby({'id':id, 'name':name});
 			$nuxt.$emit('search-search');
+		},
+		/**
+		 * 정렬 리스트 닫기
+		 */
+		closeOrder: function(){
+			if(this.order_active && this.contents_click) {	// 정렬 리스트 open 클릭하고 빈화면 다시 클릭했을때
+				this.order_active = false;
+				this.contents_click = false;
+			} else if (this.order_active){					// 정렬 리스트 open 클릭했을때
+				this.contents_click = true;
+			}
 		},
 		/**
 		 * 팝업 open
@@ -473,12 +479,45 @@ export default {
 		 * @param {*} type     파일 타입
 		 */
 		openPopup: function(popName, id, type){
+
+			// 구글 애널리틱스 추가
+			this.$sendGA(this,'검색결과 미리보기','미리보기', id);
+
 			if('ZIP,zip'.indexOf(type) != -1){
 				alert("zip 파일은 미리보기를 제공하지않습니다.");
 			}else{
 				$nuxt.$emit('default-fog', true, 'pop');
 				this.setPreview({'open': true, 'pop_id': id});
 			}
+		},
+		downCallback: function(file){
+            // 구글 애널리틱스 추가
+            this.$sendGA(this,'검색결과 다운로드','다운로드', file.origin_nm);
+
+            // 다운로드 수 증가
+            this.addDownCnt(file.id);
+		},
+		/**
+		 * @description 방사차트 그림
+		 * @param {String} name 레퍼런스 이름
+		 * @param {Array} data 차트 데이터
+		 * @param {Number} index 레퍼런스 배열 인덱스
+		 */
+		drawRadar(name = null, data = [], index = 0) {
+			if (!name) return;
+
+			if (data.length === 0) return;
+
+			const component = this.$refs[name][index];
+
+			// 컴포넌트가 없으면 리턴
+			if (!component) return;
+
+			const options = component.options;
+
+			component.copyData = JSON.stringify(data); // 깊은 복사
+			component.remove(); // 컴포넌트에 등록된 차트 제거하기
+			component.draw(); // 컴포넌트에 등록된 차트그리기
 		},
 		/**
 		 * radar차트 데이터 포멧

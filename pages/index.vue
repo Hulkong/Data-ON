@@ -46,13 +46,13 @@
 										href="javascript:void(0);" 
 										class="all-down" 
 										:key="index"
-										@click="$downloadFile(item.tbattachFiles)"
+										@click="$downloadFile(item.tbattachFiles, downCallback)"
 									>
 										<span>{{item.data_nm}}</span>
 									</a>
 									<li v-else :key="index">
 										<a  href="javascript:void(0);" 
-											@click="$downloadFile(item.tbattachFiles)"
+											@click="$downloadFile(item.tbattachFiles, downCallback)"
 										>
 											<span>{{item.data_nm}}</span>
 										</a>
@@ -83,22 +83,22 @@
 						<div class="txt"  v-if="getResult('stdr') && getResult('stdr').length > 0">
 							<ul>
 								<template v-for="(item, index) in getResult('stdr')">
-								<a  v-if="index == 0" 
-									href="javascript:void(0);" 
-									class="all-down" 
-									:key="index"
-									@click="$downloadFile(item.tbattachFiles)"
-								>
-									<span>{{item.data_nm}}</span>
-								</a>
-								<li v-else :key="index">
-									<a  href="javascript:void(0);"
-										@click="$downloadFile(item.tbattachFiles)"
+									<a  v-if="index == 0" 
+										href="javascript:void(0);" 
+										class="all-down" 
+										:key="index"
+										@click="$downloadFile(item.tbattachFiles, downCallback)"
 									>
 										<span>{{item.data_nm}}</span>
 									</a>
-								</li>
-							</template>
+									<li v-else :key="index">
+										<a  href="javascript:void(0);"
+											@click="$downloadFile(item.tbattachFiles, downCallback)"
+										>
+											<span>{{item.data_nm}}</span>
+										</a>
+									</li>
+								</template>
 							</ul>
 						</div>
 						<div class="txt" v-else>
@@ -224,32 +224,27 @@ export default {
 			stdrPop: false												// 표준코드 체계 tooltip on/off
 		}
 	},
+	beforeDestroy(){
+		window.removeEventListener('resize', this.onResize);
+		window.removeEventListener('load', this.onResize);
+	},
 	mounted(){
 
 		var that = this;
 
 		// 사이즈 조절에 따른 스타일 적용
-		that.sizeControlMain(that.$el.clientWidth);
-		$(window).resize(function() {
-			if(this.resizeTO) {
-				clearTimeout(this.resizeTO);
-			}
-			this.resizeTO = setTimeout(function() {
-				$(this).trigger('resizeEnd');
-			}, 3);
+		this.$nextTick(function() {
+			this.sizeControlMain(that.$el.clientWidth);
+			window.addEventListener('load', this.onResize);
+			window.addEventListener('resize', this.onResize);
 		});
-		$(window).on('resizeEnd', function() {
-			that.sizeControlMain($(this).width());
-		});
-		$(window).on('load',function(){  
-			that.sizeControlMain($(this).width());
-		 });
 
 		// 메인에서 사용할 데이터 가져오기
 		this.fetchData();
 	},
 	methods: {
 		...mapActions("mainList", ["getData"]),
+		...mapActions("search", ["addDownCnt"]),
 		...mapMutations("search", ["setKeyword"]),
 		/**
 		 * 화면 resize
@@ -272,23 +267,36 @@ export default {
 				this.getData(posts);
 			});
 		},
+		/**
+		 * 검색
+		 */
 		goSearch: function(){
 			var searchKey = this.keyword;
 			var valids = this.$validate(searchKey);
 
 			// 구글 애널리틱스 추가
-			this.$sendGA('메인검색','검색', searchKey);
+			if(this.$deviceChk()) this.$sendGA(this,'메인검색_mobile','검색', searchKey);
+			else this.$sendGA(this,'메인검색_pc','검색', searchKey);
 
 			// 검색
 			if(valids.status){
 				this.setKeyword(searchKey);
 				this.$router.push( '/search?keyword='+ searchKey );
-				// this.$router.push( {path: '/search', params:{ 'keyword' : searchKey}} );
 			}else{
 				alert(valids.message);
 			}
 			
-		}
+		},
+		/**
+		 * 파일 다운로드 콜백함수
+		 */
+		downCallback: function(file){
+            // 구글 애널리틱스 추가
+            this.$sendGA(this,'메인 다운로드','다운로드', file.origin_nm);
+
+            // 다운로드 수 증가
+            this.addDownCnt(file.id);
+        }
 	}
 }
 </script>

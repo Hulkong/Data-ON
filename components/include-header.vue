@@ -63,6 +63,13 @@ export default {
 		goSearch: function(){
 			var valids = this.$validate(this.searchWord);
 			if(valids.status){
+				// 구글 애널리틱스 추가
+				let device = "pc";
+				if(this.$deviceChk()) device = "mobile";
+
+				if(this.$route.name == 'index') this.$sendGA(this,'메인 검색_'+device,'검색', this.searchWord);
+				else this.$sendGA(this,'결과내 검색_'+device,'검색', this.searchWord);
+
 				//url에 추가
 				this.$router.push( '/search?keyword='+ this.searchWord );
 				//검색어 등록

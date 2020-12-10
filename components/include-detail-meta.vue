@@ -51,7 +51,8 @@
             <span class="abr">데이터 컬럼 <i class="txtrgt">{{$setComma(info.dt_column)||0}}개</i></span>
         </p>
         <a  v-if="info.tbresultMeta"
-            :href="info.tbresultMeta && info.tbresultMeta.info_url !== undefined && info.tbresultMeta.info_url != '' ? info.tbresultMeta.info_url : 'javascript:void(0);'" 
+            href="javascript:void(0);"
+            @click="sendLink(info.tbresultMeta)"
             target="_tab"
             class="link-btn"
         >
@@ -67,6 +68,14 @@
         info: Object
     },
     methods: {
+        sendLink: function(meta){
+            // 구글 애널리틱스 추가
+			this.$sendGA(this,'검색결과 자세히보기','링크연결', meta.info_url);
+
+            // 페이지 이동
+            if(meta.info_url) window.open('about:tab').location.href=meta.info_url;
+            else return false;
+        }
     }
   }
 </script>

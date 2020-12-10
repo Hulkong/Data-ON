@@ -9,7 +9,7 @@ import Vue from 'vue'
  */
 Vue.prototype.$cutText = (text, str, len, start=0) => {
     if(text && text.length >= (len+start)) return text.substr(start,len) + str;
-    else if (start > 0) return "";
+    // else if (start > 0) return "";
     else return text;
     
 }
@@ -18,15 +18,20 @@ Vue.prototype.$cutText = (text, str, len, start=0) => {
  * @param {*} date 자를 문장 (날짜로 표현할 text)
  */
 Vue.prototype.$stringToDate = (date) => {
-    if(!date && date.length < 8) return "";
+    var separator = ['년','월','일'];
+    if(!date) return "";
     
-    var text = date.substring()
+    var result ="";
+    var dArr = [];
+    dArr.push(date.substr(0,4));
+    dArr.push(date.substr(4,2));
+    dArr.push(date.substr(6,2));
+    
+    dArr.map((dd,index) => {
+        if(dd != '00') result += dd + separator[index]+" ";
+    });
 
-        return  Object.keys(result).map((key, index)=> { 
-            console.log(result[key], separator[index]);
-                    if(result[key] !== "00")
-                        return result[key] + separator[index]+" "
-                });
+    return result;
 }
 
 /**
@@ -104,10 +109,17 @@ Vue.prototype.$twoArrSort = (allList, allId, selList, selId) => {
         if(selList !== undefined && selList.length > 0){
 
             selList.map(selItem => {
-                if(allItem[allId] == selItem[selId]){
-                    selArr.push(allItem);
-                    onSel = false;
-                }   
+                if(selId){
+                    if(allItem[allId] == selItem[selId]){
+                        selArr.push(allItem);
+                        onSel = false;
+                    }   
+                }else{
+                    if(allItem[allId] == selItem){
+                        selArr.push(allItem);
+                        onSel = false;
+                    }   
+                }
             });
 
             if(onSel) otherArr.push(allItem);
@@ -235,13 +247,13 @@ Vue.prototype.$downloadFile = (files, callback) => {
                 file => { 
                     downFile(file.origin_nm, file.file_path)
                     // 다운로드 수 ++
-                    if(callback) callback(file.id);
+                    if(callback) callback(file);
                 }
             );
         }else if (typeof files == 'object'){
             downFile(files.origin_nm, files.file_path);
             // 다운로드 수 ++
-            if(callback) callback(files.id);
+            if(callback) callback(files);
         }
     }catch(e){
         console.log(e);
@@ -307,20 +319,29 @@ Vue.prototype.$validate = (keyword) => {
     return result;
 }
 
+/**
+ * 필터 값들의 파라미터화
+ * @param {*} item 필터array 
+ */
 Vue.prototype.$makeParam = (item) => {
     Object.keys(item).map((key)=>{
         if(key.indexOf('dt_') == 0){
             if(item[key].length > 0){ 
-                item[key] = item[key].map(
-                    obj => obj.id
-                ).join(',');
+                item[key] = item[key].join(',');
+                // item[key] = item[key].map(
+                //     obj => obj.id
+                // ).join(',');
             }
         }
     });
     return item;
 }
 
-
+/**
+ * 키워드 하이라이트
+ * @param {*} str 문구
+ * @param {*} keyword 키워드
+ */
 Vue.prototype.$regExpText = (str, keyword) => {
     var regExp = /[\{\}\[\]V?.,;:|\)*~`~^\-+<>@\#$%&\\\=\(\'\"]/g;
     if(regExp.test(keyword)){    // 특수문자 있을 경우 치환
@@ -347,12 +368,23 @@ Vue.prototype.$regExpText = (str, keyword) => {
     }
 }
 
-
-Vue.prototype.$sendGA = (cate, act, label, value) => {
-    Vue.$ga.event({
-        eventCategory: cate,
-        eventAction: act,
-        eventLabel: label,
-        eventValue: value
+/**
+ * 구글 애널리틱스 이벤트 
+ * @param {*} cate 
+ * @param {*} act 
+ * @param {*} label 
+ * @param {*} value 
+ */
+Vue.prototype.$sendGA = (app, cate, act, label, value) => {
+    app.$gtag('event', act,{
+        event_category: cate,
+        event_label: label,
+        value: value
     });
+}
+
+
+Vue.prototype.$deviceChk = () => {
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;
+    else return false;
 }

@@ -1,9 +1,5 @@
 <template>
-  <div
-    :style="{ visibility: isShow ? 'visible' : 'hidden' }"
-    class="contact"
-    :class="{ active: isShow }"
-  >
+  <div class="contact" :class="{ active: isShow }">
     <!-- header -->
     <div class="header">
       <span>{{ changeTitle }}</span>
@@ -16,30 +12,16 @@
         <!-- name -->
         <div class="subbox name">
           <span class="hd">이름</span>
-          <input
-            type="text"
-            name="name"
-            placeholder="이름을 작성해주세요 :)"
-            v-model="name.value"
-          />
-          <p class="errorMsg" v-show="name.error.isError">
-            {{ name.error.msg }}
-          </p>
+          <input type="text" name="name" placeholder="이름을 작성해주세요 :)" v-model="name.value" />
+          <p class="errorMsg" v-show="name.error.isError">{{ name.error.msg }}</p>
         </div>
         <!-- name -->
 
         <!-- email -->
         <div class="subbox eamil">
           <span class="hd">이메일</span>
-          <input
-            type="text"
-            name="email"
-            placeholder="메일 주소를 작성해주세요 :)"
-            v-model="email.value"
-          />
-          <p class="errorMsg" v-show="email.error.isError">
-            {{ email.error.msg }}
-          </p>
+          <input type="text" name="email" placeholder="메일 주소를 작성해주세요 :)" v-model="email.value" />
+          <p class="errorMsg" v-show="email.error.isError">{{ email.error.msg }}</p>
         </div>
         <!-- email -->
 
@@ -64,16 +46,14 @@
             placeholder="의견 내용을 남겨주세요."
             v-model="textarea.value"
           />
-          <p class="errorMsg" v-show="textarea.error.isError">
-            {{ textarea.error.msg }}
-          </p>
+          <p class="errorMsg" v-show="textarea.error.isError">{{ textarea.error.msg }}</p>
         </div>
         <!-- textarea -->
 
         <!-- captchar -->
         <div class="subbox captchar">
           <div class="captchar_contents">
-            <google-rcaptchar @verify="googleVerify"></google-rcaptchar>
+            <google-rcaptchar @verify="googleVerify" @error="googleNotVerify"></google-rcaptchar>
           </div>
         </div>
         <!-- captchar -->
@@ -84,9 +64,11 @@
           <label for="cb1"></label>
           <span>개인정보 수집 및 이용 동의(필수)</span>
           <span class="detail">[자세히보기]</span>
-          <span class="errorMsg" v-show="checkbox.error.isError">{{
+          <span class="errorMsg" v-show="checkbox.error.isError">
+            {{
             checkbox.error.msg
-          }}</span>
+            }}
+          </span>
         </div>
         <!-- checkbox -->
       </div>
@@ -107,9 +89,7 @@
         <span>닫기</span>
       </div>
     </div>
-    <p class="errorMsg server" v-show="server.error.isError">
-      {{ server.error.msg }}
-    </p>
+    <p class="errorMsg server" v-show="server.error.isError">{{ server.error.msg }}</p>
   </div>
 </template>
 
@@ -118,8 +98,8 @@ export default {
   props: {
     isShow: {
       default: true,
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   data: () => ({
     title: "의견 남기기",
@@ -130,61 +110,65 @@ export default {
       value: null,
       error: {
         isError: false,
-        msg: "10자이내로 작성해주세요",
-      },
+        msg: "10자이내로 작성해주세요"
+      }
     },
     email: {
       value: null,
       error: {
         isError: false,
-        msg: "이메일 형식에 맞지 않습니다",
-      },
+        msg: "이메일 형식에 맞지 않습니다"
+      }
     },
     selectbox: {
       value: 0,
       error: {
         isError: false,
-        msg: "",
-      },
+        msg: ""
+      }
     },
     checkbox: {
       value: false,
       error: {
         isError: false,
-        msg: "필수항목입니다",
-      },
+        msg: "필수항목입니다"
+      }
     },
     textarea: {
       value: null,
       error: {
         isError: false,
-        msg: "필수항목입니다",
-      },
+        msg: "필수항목입니다"
+      }
     },
     server: {
       value: null,
       error: {
         isError: false,
-        msg: "서버와 연결이 끊어졌습니다. 다시 시도해주세요.",
-      },
-    },
+        msg: "서버와 연결이 끊어졌습니다. 다시 시도해주세요."
+      }
+    }
   }),
 
   watch: {
     "name.value": _.debounce(function() {
+      if (!this.isShow) return;
+
       if (this.validTarget(this.name, "이름을 입력해주세요"))
         this.validNameLimitTen(this.name);
     }, 600),
     "email.value": _.debounce(function() {
+      if (!this.isShow) return;
+
       if (this.validTarget(this.email, "이메일을 입력해주세요"))
         this.validEmail(this.email);
-    }, 600),
+    }, 600)
   },
 
   computed: {
     changeTitle() {
       return this.isShowSecond ? "접수 완료" : "의견 남기기";
-    },
+    }
   },
 
   methods: {
@@ -211,6 +195,11 @@ export default {
       this.checkbox.value = false;
       this.isAllPass = false;
       this.isShowSecond = false;
+      this.name.error.isError = false;
+      this.email.error.isError = false;
+      this.selectbox.error.isError = false;
+      this.textarea.error.isError = false;
+      this.checkbox.error.isError = false;
     },
 
     /**
@@ -218,7 +207,21 @@ export default {
      * @param {String} data: return value
      */
     googleVerify(data) {
+      console.log(data);
       if (data) this.isVerifyCaptchar = true;
+    },
+
+    /**
+     * @description verify in google rcaptchar
+     * @param {String} data: return value
+     */
+    googleNotVerify(error) {
+      console.log(error);
+      if (data)
+        this.setErrorMsg(
+          this.server,
+          "구글인증 서버와 연결이 끊어졌습니다. 다시 시도해주세요."
+        );
     },
 
     /**
@@ -294,9 +297,9 @@ export default {
     requestToServer(params = {}) {
       return new Promise((resolve, reject) => {
         axios
-          .post(" /api/inquires/", params)
-          .then((response) => resolve(response.data))
-          .catch((error) => reject(error));
+          .post("/api/inquires/", params)
+          .then(response => resolve(response.data))
+          .catch(error => reject(error));
       });
     },
 
@@ -321,10 +324,10 @@ export default {
         name: this.name.value,
         email: this.email.value,
         type: this.selectbox.value,
-        content: this.textarea.value,
+        content: this.textarea.value
       })
         .then(() => (this.isShowSecond = true))
-        .catch((err) => {
+        .catch(err => {
           this.setErrorMsg(this.server, this.server.error.msg);
           this.isShowSecond = false;
         });
@@ -336,17 +339,15 @@ export default {
     clickCloseButton() {
       this.init();
       this.$emit("close");
-    },
+    }
   },
 
   beforeCreate() {},
   created() {},
   beforeMount() {},
-  mounted() {
-    this.setTest();
-  },
+  mounted() {},
   beforeDestroy() {},
-  destroyed() {},
+  destroyed() {}
 };
 </script>
 
@@ -408,11 +409,18 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 443px;
-  height: 604px;
   box-shadow: 6px 6px 10px #00000029;
   border: 2px solid #008bd9;
   border-radius: 14px;
+  visibility: hidden;
+}
+
+.contact.active {
+  visibility: visible;
+  left: 5px;
+  top: 0;
+  width: 443px;
+  height: 604px;
 }
 
 /* width */
@@ -427,13 +435,13 @@ export default {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #0091E1;
-      border-radius: 8px;
+  background: #0091e1;
+  border-radius: 8px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background:#005583;
+  background: #005583;
 }
 
 /* input 기본 스타일 초기화 */
@@ -460,14 +468,16 @@ select {
   cursor: pointer;
 }
 
-select::-ms-expand {display:none}
+select::-ms-expand {
+  display: none;
+}
 
 textarea {
   width: 100%;
   height: 120px;
   overflow-y: scroll;
   border: 1px solid #707070;
-  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;;
+  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;
   color: #919294;
   margin: 0px;
   padding: 10px;
@@ -580,11 +590,11 @@ input[id="cb1"] {
   vertical-align: super;
   padding-left: 11px;
   color: #656565;
-  font: normal normal normal 0.625rem/1.125rem Noto Sans CJK KR;;
+  font: normal normal normal 0.625rem/1.125rem Noto Sans CJK KR;
 }
 
 .subbox.checkbox span.detail {
-  font: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;;
+  font: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;
   cursor: pointer;
 }
 
@@ -632,7 +642,7 @@ input[id="cb1"] {
 }
 
 .footer .button span {
-  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;;
+  font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;
   color: #fff;
   vertical-align: middle;
 }
@@ -643,7 +653,7 @@ input[id="cb1"] {
 
 .errorMsg {
   /* visibility: hidden; */
-  font: normal normal normal 0.625rem/1.25rem Noto Sans CJK KR;;
+  font: normal normal normal 0.625rem/1.25rem Noto Sans CJK KR;
   color: #ff2121;
   position: absolute;
   left: 135px;
@@ -680,6 +690,9 @@ input[id="cb1"] {
   .contact.active {
     visibility: visible;
     top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .contents .after {

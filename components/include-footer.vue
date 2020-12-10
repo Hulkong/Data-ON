@@ -31,7 +31,7 @@
     methods: {
 		goHomepage: function(){
 			// 구글 애널리틱스 추가
-			this.$sendGA('회사소개','클릭', '회사홈페이지로 이동');
+			this.$sendGA(this,'회사소개','클릭', '회사홈페이지로 이동');
 
 			// 홈페이지로 이동
 			window.open('about:blank').location.href='https://openmate-on.co.kr/';

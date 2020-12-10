@@ -173,6 +173,9 @@ export default {
 				page: 1
 			});
 
+			// 구글 애널리틱스 추가
+			this.$sendGA(this,'공지 검색','검색', that.keyword);
+
 			// 검색 조건으로 리스트 다시가져오기
 			this.fetchData();
 		},

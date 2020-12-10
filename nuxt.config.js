@@ -25,16 +25,18 @@ export default {
         name: 'description',
         content: process.env.npm_package_description || '검색에 새로운 역사를 쓰다! 데이터온에서 정형화된 데이터들을 활용해보세요.'
       },
-      // { hid: 'description', name: 'description', content: '검색에 새로운 역사를 쓰다! 데이터온에서 정형화된 데이터들을 활용해보세요.' }
-      // { hid: 'keyword', name: 'keyword', content: '데이터, 공공, 공공데이터, 좌표, 검색'},
-      // { name: 'image', content: 'https://data-on.co.kr/images/meta_img.png' },
+      {
+        property: 'og:description',
+        content: '누구나 쉽게 찾고 쓰는 데이터 검색의 중심. 헤매지 말고 여기로 오세요.'
+      },
+      // { name: 'keyword', content: '데이터, 공공, 공공데이터, 좌표, 검색'},
       {
         property: 'og:title',
         content: '데이터온'
       },
       {
         property: 'og:image',
-        content: 'https://data-on.co.kr/images/meta_img.png'
+        content: 'https://data-on.co.kr/images/thumbnail_kakaotalk.png'
       }
     ],
     link: [{
@@ -44,7 +46,7 @@ export default {
     }],
     script: [{
       src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit',
-      defer: true 
+      defer: true
     }]
   },
 
@@ -114,26 +116,40 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [
-    '@nuxtjs/google-analytics'
-  ],
-  googleAnalytics: {
-    id: 'G-ENX4P0R616', // Use as fallback if no runtime config is provided
-  },
-  publicRuntimeConfig: {
-    googleAnalytics: {
-      id: 'G-ENX4P0R616' // local
-    }
-  },
+  buildModules: [],
   /*
    ** Nuxt.js modules
    */
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/google-gtag'
   ],
   axios: {
     proxy: true,
     // baseURL: 'http://dev.openmate-on.co.kr:8000/api/', // Used as fallback if no runtime config is provided
+  },
+  'google-gtag': {
+    // id: '255538273', // required
+    id: process.env.NODE_ENV !== 'production' ? '255538273' : '255653647', // required
+    config: {
+      // this are the config options for `gtag
+      // check out official docs: https://developers.google.com/analytics/devguides/collection/gtagjs/
+      anonymize_ip: true, // anonymize IP 
+      send_page_view: false, // might be necessary to avoid duplicated page track on page reload
+      linker: {
+        domains: ['data-on.co.kr']
+      }
+    },
+    debug: true, // enable to track in dev mode
+    disableAutoPageTrack: false, // disable if you don't want to track each page route with router.afterEach(...)
+    // optional you can add more configuration like [AdWords](https://developers.google.com/adwords-remarketing-tag/#configuring_the_global_site_tag_for_multiple_accounts)
+    additionalAccounts: [{
+      // id: 'G-YQX8MQCG3Z', // required if you are adding additional IDs
+      id: process.env.NODE_ENV !== 'production' ? 'G-YQX8MQCG3Z' : 'G-DZD1V31WDH', // required if you are adding additional IDs
+      config: {
+        send_page_view: false // optional configurations
+      }
+    }]
   },
   proxy: {
     '/api/': {

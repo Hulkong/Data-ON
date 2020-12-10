@@ -48,12 +48,17 @@ export default {
 			"setOrderby"			//	선택한 정렬순서 검색 param에 저장
 		]),
 
+		selOrder: function(id, name){
+			// 구글 애널리틱스 추가
+			this.$sendGA(this, '리스트 정렬_mobile', '클릭', name);
+
+			// 정렬 저장
+			this.setOrderby({'id':id, 'name':name});
+		},
+
 		/**
 		 * 정렬리스트 닫기
 		 */
-		selOrder: function(id, name){
-			this.setOrderby({'id':id, 'name':name});
-		},
 		selClose: function(){
 			this.setMobileOrderBoxOn(false);
 			$nuxt.$emit('default-fog', false, 'pop');

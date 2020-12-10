@@ -5,7 +5,7 @@
             <!-- 링크리스트 시작 -->
             <div class="item" v-for="item in otherList" :key="item.id">
 				<p class="tit" v-html="item.lnk_title"></p>
-                <a :href="item.lnk_url" target="_tab" class="txt">
+                <a href="javascript:void(0);" @click="sendLink(item)" class="txt">
                     <ul>
                         <li>기관: {{item.lnk_organ}}</li>
                         <li>범위: {{item.lnk_range}}</li>
@@ -99,10 +99,15 @@ export default {
 						slideBy: 4,
 					}
 				}
-			})
-			
-				
-			
+			})	
+		},
+		sendLink: function(info){
+			// 구글 애널리틱스 추가
+			this.$sendGA(this, '전국데이터는 아니지만', '링크연결', info['lnk_title']);
+
+			// 링크 이동
+			if(info.lnk_url) window.open('about:tab').location.href=info.lnk_url;
+            else return false;
 		}
 	}
 }

@@ -36,7 +36,7 @@
 						<a href="javascript:void(0);" class="lm_a1" @click="openSubMenu(fobj.id)"><span>{{fobj.name}}</span></a>
 						<ul v-if="!getMobileFilterOn && getFilterList(fobj.list_id).length > 0">
 							<li class="lm_l2" 
-								v-for="(item, index) in sortFilterList(fobj)" 
+								v-for="(item, index) in sortFilterList(fobj.id, fobj.list_id)" 
 								:key="index"
 								:class="{'active': getChkSelFilter({'name': fobj.id, 'id': item['dt_'+fobj.id]})}"
 							>
@@ -57,7 +57,7 @@
 						<transition name="slide">
 							<ul v-if="getMobileFilterOn && fobj.id == mOpenItem">
 								<li class="lm_l2" 
-									v-for="(item, index) in sortFilterList(fobj)" 
+									v-for="(item, index) in sortFilterList(fobj.id, fobj.m_id)" 
 									:key="index"
 									:class="{'active': getChkSelFilter({'name': fobj.id, 'id': item['dt_'+fobj.id]})}"
 								>
@@ -101,11 +101,11 @@ export default {
 			mobileopen: false,
 			mOpenItem: '',
 			filterlist: [
-				{'id': 'type', 'list_id': 'file_type', 'name': '데이터 형식', 'm_id':''},
-				{'id': 'col', 'list_id': 'column_list7', 'name':'컬럼명', 'more_id':'column_list'},
-				{'id': 'range', 'list_id': 'range_type', 'name':'공간단위'},
-				{'id': 'category', 'list_id': 'category_type7', 'name':'분야', 'more_id': 'category_type'},
-				{'id': 'organ', 'list_id': 'dt_organ_column7', 'name':'제공기관', 'more_id':'dt_organ_column'}
+				{'id': 'type', 'list_id': 'file_type', 'name': '데이터 형식', 'm_id':'file_type'},
+				{'id': 'col', 'list_id': 'column_list7', 'name':'컬럼명', 'more_id':'column_list', 'm_id':'column_list20'},
+				{'id': 'range', 'list_id': 'range_type', 'name':'공간단위', 'm_id': 'range_type'},
+				{'id': 'category', 'list_id': 'category_type7', 'name':'분야', 'more_id': 'category_type', 'm_id': 'category_type'},
+				{'id': 'organ', 'list_id': 'dt_organ_column7', 'name':'제공기관', 'more_id':'dt_organ_column', 'm_id':'dt_organ_column20'}
 			]
 		}
 	},
@@ -143,16 +143,16 @@ export default {
 			// 검색
 			$nuxt.$emit('search-search', word);
 		},
-		sortFilterList: function(obj){
-			var allList = this.getFilterList(obj.list_id);
-			var selList = this.getSelectFilter(obj.id);
+		sortFilterList: function(id, list_id){
+			var allList = this.getFilterList(list_id);
+			var selList = this.getSelectFilter(id);
 			var resultArr = [];
-
+			// console.log(selList);
 			if(selList && selList.length > 0){
 				resultArr = selList.map(sItem => {
 					let rsltObj = {};
-					rsltObj['dt_'+obj.id] = sItem.id;
-					rsltObj['dt_'+obj.id+'_nm'] = sItem.nm;
+					rsltObj['dt_'+ id] = sItem.id;
+					rsltObj['dt_'+ id +'_nm'] = sItem.nm;
 					rsltObj['max_count'] = sItem.cnt;
 					return rsltObj;
 				});
@@ -160,11 +160,11 @@ export default {
 
 			if(allList && allList.length > 0){
 				let sortedArr = this.$twoArrSort(allList, 
-												"dt_"+obj.id, 
+												"dt_" + id, 
 												selList, 
 												"id"
 												);
-
+				// console.log(sortedArr);
 				// if(sortedArr.selArr.length > 0) resultArr = sortedArr.selArr;
 				resultArr = resultArr.concat(sortedArr.otherArr);
 			}
@@ -176,12 +176,16 @@ export default {
 		clickFilter: function(nm, item, index){
 			if(this.getChkSelFilter({'name': nm, 'id': item['dt_'+nm]})){	// 필터 제거
 				this.removeFilter({'name':nm, 'item': item});
-				this.$router.push( {path: '/search', query:this.makeParam});
-				// $nuxt.$emit('search-search', undefined, 'none');
+				$nuxt.$emit('search-search');
+				// this.$router.push( {path: '/search', query:this.makeParam});
 			}else{													// 필터 추가
+				// 구글 애널리틱스 추가
+				this.$sendGA(this,'검색결과 필터','클릭',nm, item['dt_'+nm]);
+
+				// 필터추가
 				this.addFilter({'name':nm, 'item': item});
-				this.$router.push( {path: '/search', query:this.makeParam});
-				// $nuxt.$emit('search-search', undefined, 'none');	
+				$nuxt.$emit('search-search');
+				// this.$router.push( {path: '/search', query:this.makeParam});
 			}
 		},
 		/**

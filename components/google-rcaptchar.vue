@@ -4,7 +4,8 @@
       <vue-recaptcha
         ref="recaptcha"
         @verify="onVerify"
-        sitekey="6Ld_JP4ZAAAAAFiyjSHomsE2KE91s5-Qv_XUJ_NW"
+        @error="onError"
+        sitekey="6LfgUAAaAAAAAJdCmJt5OYhAB_w4P4rmpxeX1xD9"
       ></vue-recaptcha>
     </div>
   </div>
@@ -13,14 +14,15 @@
 <script>
 import VueRecaptcha from "vue-recaptcha";
 export default {
-  data: () => ({
-    siteKey: "6Ld_JP4ZAAAAAFiyjSHomsE2KE91s5-Qv_XUJ_NW"
-  }),
+  data: () => ({}),
   components: { VueRecaptcha },
   computed: {},
   methods: {
     onVerify(verify) {
       this.$emit("verify", verify);
+    },
+    onError(error) {
+      this.$emit("error", error);
     }
   },
 

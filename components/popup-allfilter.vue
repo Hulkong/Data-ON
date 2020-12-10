@@ -57,10 +57,12 @@ export default {
             'getSelectFilter',       // 선택한 필터 리스트 가져오기
             'getAllFilterListId',    // 필터 리스트 id 가져오기
             'getAllFilterItemId',    // 필터 리스트 아이템 id 
-            'getAllFilterListNm',    // 필터 리스트 명
-            
-                   
+            'getAllFilterListNm',    // 필터 리스트 명    
         ]),
+        makeParam: function(){
+			var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
+			return this.$makeParam(allParam);
+		},
         // chkSelAllFilter: function(id){ // 선택리스트 확인
         //     console.log(id, this.selectList);
         // },       
@@ -158,7 +160,9 @@ export default {
                     that.addFilter({'name': that.getAllFilterItemId, 'item': elmn});
                 });
             }
+            
             // 팝업 닫기
+            // this.$router.push( {path: '/search', query:this.makeParam});
             $nuxt.$emit('search-search');	
             this.closePopAllFilter();
         },

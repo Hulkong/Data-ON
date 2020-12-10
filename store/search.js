@@ -18,7 +18,8 @@ export const state = () => ({
             page: 1,                    // 페이지    
             page_list_size: 5           // 한 페이지에 보여질 페이지 리스트 수
         },
-        storeName:'search'
+        storeName:'search',
+        // urlParam: {}
     },
     searchList: {   // 검색 결과 리스트
         title_count: 0,     // 데이터명 검색결과 총 수
@@ -103,6 +104,12 @@ export const getters = {
     getSearchOption: (state) => {
         return state['searchOption'];
     },
+    // getUrlParam: (state) => {
+    //     if(Object.keys(state['searchOption']['urlParam']).length > 0)
+    //         return state['searchOption']['urlParam'];
+    //     else
+    //         return false;
+    // },
     getLinkOption: (state) => {
         return state['otherList']['option'];
     },
@@ -369,6 +376,7 @@ export const mutations = {
         obj.cnt = info.item['max_count'];
         
         state['searchOption']['param']['dt_'+info.name].push(obj);
+        // state['searchOption']['param']['dt_'+info.name].push(info.item['dt_'+info.name]);
 
         // 페이지 초기화
         state['searchOption']['param'].page = 1;
@@ -415,6 +423,7 @@ export const mutations = {
         Object.keys(param).map(nm => {
             if(nm.indexOf('dt_') == 0){
                 state['searchOption']['param'][nm]  = param[nm].split(',').map(val => {
+                    // return val;
                     return {'id': val, 'nm':val};
                 });
             }else{
@@ -432,7 +441,20 @@ export const actions = {
      * @param {*} posts 
      */
     async getSearch({ commit }, posts) { 
+
         //   param 필터 (array to string)
+        // if(posts.param){
+        //     console.log(posts.param);
+        //     let pparam = _.cloneDeep(posts.param);
+        //     Object.keys(pparam).map((key)=>{
+        //         if(key.indexOf('dt_') == 0){
+        //             if(pparam[key].length > 0){ 
+        //                 pparam[key] = pparam[key].join(',');
+        //             }
+        //         }
+        //     });
+        // }
+
         if(posts.param){
             let pparam = _.cloneDeep(posts.param);
             Object.keys(pparam).map((key)=>{
@@ -444,10 +466,28 @@ export const actions = {
                     }
                 }
             });
+            posts.param = pparam;
         }
+
+        // 새로고침시 url에 있는 parameter 사용
+        // if(this.getters['search/getUrlParam']){
+        //     let pparam2 = _.cloneDeep(this.getters['search/getUrlParam']);
+        //     Object.keys(pparam2).map((key)=>{
+        //         if(key.indexOf('dt_') == 0){
+        //             if(pparam2[key].length > 0){ 
+        //                 pparam2[key] = pparam2[key].map(
+        //                     obj => obj.id
+        //                 ).join(',');
+        //             }
+        //         }
+        //     });
+        //     posts.param = pparam2;
+        // }
+
 
         await this.dispatch('setData', posts).then(result=>{
             result.store = this;
+            // console.log(posts, result);
             commit('addList', result);
             commit('setLoading', false);
         });

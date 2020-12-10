@@ -40,7 +40,7 @@
       <include-footer></include-footer>
       <!-- e : #footer-wrap //-->
       <div class="__bottom-buttons">
-        <contact :isShow="isShowContact" @close="closeContact"></contact>
+        <contact v-if="isShowContact" @close="closeContact"></contact>
         <div class="contact-button" @click="isShowContact = true"></div>
         <a
           href="javascript:void(0);"
@@ -52,7 +52,6 @@
         </a>
       </div>
     </div>
-    <information></information>
   </div>
 </template>
 
@@ -87,28 +86,12 @@ export default {
     var that = this;
     this.msec01H = $(".msec-01").outerHeight();
 
-    // 화면 사이즈 조절
-    jQuery(function($) {
-      that.docW = $("#doc").outerWidth();
-      $(window).resize(function() {
-        if (this.resizeTO) {
-          clearTimeout(this.resizeTO);
-        }
-        this.resizeTO = setTimeout(function() {
-          $(this).trigger("resizeEnd");
-        }, 10);
-      });
-    });
-    $(window).on("resizeEnd", function() {
-      that.docW = $("#doc").outerWidth();
-    });
-
-    $(window).on("load", function() {
-      that.docW = $("#doc").outerWidth();
-    });
-
-    $(window).on("scroll", function() {
-      that.pageY = this.pageYOffset;
+    // 화면 사이즈 조절 & 스크롤 높이 측정
+    this.$nextTick(function() {
+      this.onResize();
+      window.addEventListener("load", this.onResize);
+      window.addEventListener("resize", this.onResize);
+      window.addEventListener("scroll", this.onScroll);
     });
   },
   created() {
@@ -125,6 +108,9 @@ export default {
   },
   beforeDestroy() {
     this.$nuxt.$off("default-fog");
+    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("load", this.onResize);
+    window.removeEventListener("scroll", this.onScroll);
   },
   methods: {
     ...mapMutations("search", [
@@ -133,7 +119,15 @@ export default {
       "setAllFilter", // 필터 전체 검색
       "setMobileFilterOn" // 모바일 필터 창
     ]),
-
+    onResize: function(event) {
+      var that = this;
+      setTimeout(function() {
+        that.docW = $("#doc").outerWidth();
+      }, 10);
+    },
+    onScroll: function(evnet) {
+      this.pageY = evnet.path[1].pageYOffset;
+    },
     /**
      * 검은 배경 클릭시 닫기
      */
@@ -213,6 +207,10 @@ export default {
   z-index: 2500;
   background: white;
   margin-bottom: -60px;
+  position: relative;
+  top: 100vh;
+  width: 0;
+  height: 0;
 }
 
 .__bottom-buttons .contact-button:hover {
@@ -233,10 +231,9 @@ export default {
   }
 }
 
-
 @media (min-width: 320px) and (max-width: 480px) {
   .__bottom-buttons .contact-button {
-    background-image: url(/images/ask/bt-inquire-mobile.png);
+    /* background-image: url(/images/ask/bt-inquire-mobile.png); */
   }
 }
 </style>
