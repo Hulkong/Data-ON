@@ -8,7 +8,7 @@
 					<h1 class="logo"><a href="/"><span class="blind">Data-on</span></a></h1>
 					<nuxt-link to="/notice" class="bt-notice"><span>공지사항</span></nuxt-link> 
 				</div>
-				<h3><span class="typing-txt">누구나 쉽게 찾고 <br />활용하는 데이터플랫폼</span></h3>
+				<h3><span class="typing-txt">누구나 쉽게 찾고 <br />활용하는 데이터플랫</span></h3>
 				<div class="search">
 					<p class="chk-input">
 						<input type="text" 

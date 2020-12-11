@@ -63,7 +63,7 @@
           <input type="checkbox" id="cb1" v-model="checkbox.value" />
           <label for="cb1"></label>
           <span>개인정보 수집 및 이용 동의(필수)</span>
-          <span class="detail">[자세히보기]</span>
+          <span class="detail" @click="goInform">[자세히보기]</span>
           <span class="errorMsg" v-show="checkbox.error.isError">
             {{
             checkbox.error.msg
@@ -172,6 +172,19 @@ export default {
   },
 
   methods: {
+    goInform() {
+      // 구글 애널리틱스 추가
+      this.$sendGA(
+        this,
+        "개인정보 취급방침",
+        "클릭",
+        "개인정보 취급방침 페이지로 이동"
+      );
+
+      // 개인정보 취급방침 이동
+      window.open("about:blank").location.href = "/inform";
+    },
+
     /**
      * @description 테스트 파라미터 자동입력
      */
@@ -190,7 +203,6 @@ export default {
       this.name.value = null;
       this.email.value = null;
       this.selectbox.value = 0;
-      this.googleVerify = false;
       this.textarea.value = null;
       this.checkbox.value = false;
       this.isAllPass = false;
