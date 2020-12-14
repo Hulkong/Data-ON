@@ -11,7 +11,7 @@
       <div v-if="!isShowSecond" class="before">
         <!-- name -->
         <div class="subbox name">
-          <span class="hd">이름</span>
+          <label class="hd" for="name">이름</label>
           <input type="text" name="name" placeholder="이름을 작성해주세요 :)" v-model="name.value" />
           <p class="errorMsg" v-show="name.error.isError">{{ name.error.msg }}</p>
         </div>
@@ -19,7 +19,7 @@
 
         <!-- email -->
         <div class="subbox eamil">
-          <span class="hd">이메일</span>
+          <label class="hd" for="email">이메일</label>
           <input type="text" name="email" placeholder="메일 주소를 작성해주세요 :)" v-model="email.value" />
           <p class="errorMsg" v-show="email.error.isError">{{ email.error.msg }}</p>
         </div>
@@ -27,20 +27,19 @@
 
         <!-- selectbox -->
         <div class="subbox selectbox">
-          <span class="hd">의견 유형</span>
-          <div class="select_container">
-            <select v-model="selectbox.value">
-              <option value="0">오류신고</option>
-              <option value="1">기능개선</option>
-              <option value="2">데이터 문의</option>
-            </select>
-          </div>
+          <label for="select-opinion" class="hd">의견 유형</label>
+          <select v-model="selectbox.value" id="select-opinion">
+            <option value="0">오류신고</option>
+            <option value="1">기능개선</option>
+            <option value="2">데이터 문의</option>
+          </select>
         </div>
         <!-- selectbox -->
 
         <!-- textarea -->
         <div class="subbox textarea">
           <textarea
+            id="textarea-opinion"
             type="text"
             name="opinion"
             placeholder="의견 내용을 남겨주세요."
@@ -97,7 +96,7 @@
 export default {
   props: {
     isShow: {
-      default: true,
+      default: false,
       type: Boolean
     }
   },
@@ -573,7 +572,7 @@ input[id="cb1"] {
   border-bottom: none;
 }
 
-.select_container {
+.subbox.selectbox select {
   display: inline-block;
   width: 110px;
 }

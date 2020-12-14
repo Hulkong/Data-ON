@@ -22,6 +22,7 @@
                     {'div-cont': !main_class}, 
                     {'full': board_class}]"
       >
+        <loading-data :loading="getLoading"></loading-data>
         <!-- s: fog2 -->
         <div class="content-slider-ovclick" v-if="bodyFog" @click="closeFog('')" />
         <!-- e: fog2 -->
@@ -29,6 +30,18 @@
         <include-filter v-if="search_class"></include-filter>
         <!-- e: snb-wrap-->
         <Nuxt :nuxtChildKey="routerViewKey" />
+        <div class="__bottom-buttons">
+          <contact :isShow="isShowContact" @close="closeContact"></contact>
+          <div class="contact-button" @click="isShowContact = true"></div>
+          <a
+            href="javascript:void(0);"
+            @click="$scrollToTop"
+            class="top-btn over"
+            v-show="(msec01H <= pageY)"
+          >
+            <span class="blind">top</span>
+          </a>
+        </div>
       </div>
       <popup-preview v-if="getPreviewOn"></popup-preview>
       <popup-allfilter v-if="getAllFilterOn"></popup-allfilter>
@@ -39,18 +52,6 @@
       <!-- s : #footer-wrap //-->
       <include-footer></include-footer>
       <!-- e : #footer-wrap //-->
-      <div class="__bottom-buttons">
-        <contact v-if="isShowContact" @close="closeContact"></contact>
-        <div class="contact-button" @click="isShowContact = true"></div>
-        <a
-          href="javascript:void(0);"
-          @click="$scrollToTop"
-          class="top-btn over"
-          v-show="(msec01H <= pageY)"
-        >
-          <span class="blind">top</span>
-        </a>
-      </div>
     </div>
   </div>
 </template>
@@ -60,7 +61,7 @@ import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 export default {
   data: function() {
     return {
-      isShowContact: false, // Contact 컴포넌트 visible
+      isShowContact: false,
       main_class: true,
       search_class: false,
       board_class: false,
@@ -76,7 +77,8 @@ export default {
     ...mapGetters("search", [
       "getMobileOrderBoxOn", // [모바일] 필터 on/off
       "getPreviewOn", // preview popup on/off
-      "getAllFilterOn" // allfilter popup on/off
+      "getAllFilterOn", // allfilter popup on/off
+      "getLoading" // 로딩 on/off 가져오기
     ]),
     routerViewKey() {
       this.setStyles(this.$route.matched[0].path);
@@ -168,7 +170,7 @@ export default {
     },
 
     /**
-     * @description close contact layout
+     * @description click to close button in contact layout
      */
     closeContact() {
       this.isShowContact = false;
@@ -190,7 +192,7 @@ export default {
   right: 0;
   padding-right: 23px;
   position: fixed;
-  z-index: 2500;
+  z-index: 2299;
 }
 
 .__bottom-buttons .contact-button {

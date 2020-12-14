@@ -37,6 +37,10 @@ export default {
       {
         property: 'og:image',
         content: 'https://data-on.co.kr/images/thumbnail_kakaotalk.png'
+      },
+      {
+        name: 'naver-site-verification',
+        content: '1ceeb49efb8d9bfc30456ed9d858fb3ee23807ac'
       }
     ],
     link: [{
@@ -122,7 +126,35 @@ export default {
    */
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/google-gtag'
+    '@nuxtjs/google-gtag',
+    '@nuxtjs/robots'
+  ],
+  /**
+   * robot: google, msn, naver, daum
+   */
+  robots: [{
+      UserAgent: '*',
+      Disallow: '/'
+    }, {
+      UserAgent: 'Googlebot',
+      Allow: '/'
+    },
+    {
+      UserAgent: 'googlebot-image',
+      Allow: '/'
+    },
+    {
+      UserAgent: 'MSNBot',
+      Allow: '/'
+    },
+    {
+      UserAgent: 'Yeti',
+      Allow: '/'
+    },
+    {
+      UserAgent: 'Daumoa',
+      Allow: '/'
+    }
   ],
   axios: {
     proxy: true,
