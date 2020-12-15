@@ -44,7 +44,7 @@
                     </p> -->
                     <div class="mobile-con">
                         <div class="ex">
-                            <a href="#n"><span>데이터 다운로드는 PC웹버전에서만 가능합니다.</span></a>			
+                            <a href="javascript:void(0);" @click="getCopyUrl"><span>데이터 다운로드는 PC웹버전에서만 가능합니다.</span></a>			
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ export default {
 		}
 	},
 	mounted(){
-	    // 게시판 상세내용 가져오기
+        // 게시판 상세내용 가져오기
         this.fetchData(this.$route.params.id);
         this.listParam = this.$route.query;
 	},
@@ -132,6 +132,9 @@ export default {
 
             // 다운로드 수 증가
             this.addDownCnt(file.id);
+        },
+        getCopyUrl: function(){
+            this.$clipBoardCopy();
         }
 	}
 }

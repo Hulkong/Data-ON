@@ -271,8 +271,8 @@ export default {
 		 * 검색
 		 */
 		goSearch: function(){
-			var searchKey = this.keyword;
-			var valids = this.$validate(searchKey);
+			var searchKey = this.$trim(this.keyword);
+			var valids = this.$validateLen(searchKey, 2, 50);
 
 			// 구글 애널리틱스 추가
 			if(this.$deviceChk()) this.$sendGA(this,'메인검색_mobile','검색', searchKey);
@@ -316,5 +316,13 @@ export default {
     word-break: keep-all;
     max-height: 46px;
 	overflow: hidden;
+}
+#contents >>> .msec-01 .minit .logo a{ 
+	display:block;width:166px;background:url(/images/logo.png) no-repeat left center;  background-size:100% auto; -webkit-transition: all 0s ease-in-out;-moz-transition: all 0s ease-in-out;-o-transition: all 0s ease-in-out;transition: all 0s ease-in-out;
+ }
+
+@media only screen and (max-width:999px) {
+	#contents >>> .msec-01 h3 span{display:inline-block;vertical-align:top;text-align:center; line-height:1.5em;}
+	#contents >>> .msec-01 .minit .logo a{display:inline-block;vertical-align:top;background-size:100% auto; min-width:169px; min-height:45px; max-width:249px; max-height:66px;}
 }
 </style>

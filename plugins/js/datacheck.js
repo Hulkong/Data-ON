@@ -13,13 +13,18 @@ export default ({app}, inject) => {
     })
     /**
      * 검색 리스트의 title내의 검색어 하이라이트 (링크데이터용)
-     * arr 데이터 리스트
-     * keyword 검색어
+     * @param arr 데이터 리스트
+     * @param keyword 검색어
+     * @param len 길이 조절
      */
-    inject('findTitlekeyword', (arr, keyword) => {
+    inject('findTitlekeyword', (arr, keyword, len) => {
         return arr.map(item => {
             // item.lnk_title = item.lnk_title.replace("(?i)"+keyword,"<span>"+keyword+"</span>");
-            item.lnk_title = regExp_test(item.lnk_title, keyword);
+            if(len && len > 0 && item.lnk_title.length > len)
+                item.lnk_title = regExp_test(item.lnk_title.substring(0, len)+"...", keyword);
+            else
+                item.lnk_title = regExp_test(item.lnk_title, keyword);
+
             return item;
         })
     })
