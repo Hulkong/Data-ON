@@ -541,7 +541,7 @@ td {
 
   .contents-layout table th,
   .contents-layout table td {
-    font-size: 0.8vw;
+    font-size: 10px;
     line-height: 1;
     letter-spacing: 0px;
   }
@@ -549,10 +549,6 @@ td {
   span,
   sub {
     font-size: 13px;
-  }
-
-  .inform >>> #footer-wrap {
-    display: none;
   }
 }
 </style>

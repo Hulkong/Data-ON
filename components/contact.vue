@@ -12,7 +12,13 @@
         <!-- name -->
         <div class="subbox name">
           <label class="hd" for="name">이름</label>
-          <input type="text" name="name" placeholder="이름을 작성해주세요 :)" v-model="name.value" />
+          <input
+            type="text"
+            name="name"
+            placeholder="이름을 작성해주세요 :)"
+            v-model="name.value"
+            :maxlength="10"
+          />
           <p class="errorMsg" v-show="name.error.isError">{{ name.error.msg }}</p>
         </div>
         <!-- name -->
@@ -20,7 +26,13 @@
         <!-- email -->
         <div class="subbox eamil">
           <label class="hd" for="email">이메일</label>
-          <input type="text" name="email" placeholder="메일 주소를 작성해주세요 :)" v-model="email.value" />
+          <input
+            type="text"
+            name="email"
+            placeholder="메일 주소를 작성해주세요 :)"
+            v-model="email.value"
+            :maxlength="50"
+          />
           <p class="errorMsg" v-show="email.error.isError">{{ email.error.msg }}</p>
         </div>
         <!-- email -->
@@ -44,8 +56,14 @@
             name="opinion"
             placeholder="의견 내용을 남겨주세요."
             v-model="textarea.value"
+            :maxlength="500"
           />
           <p class="errorMsg" v-show="textarea.error.isError">{{ textarea.error.msg }}</p>
+          <p class="checkNumber">
+            <span :class="{limit: textarea.limit}">{{ textarea.value.length }}</span>
+            <span>/</span>
+            <strong>500</strong>
+          </p>
         </div>
         <!-- textarea -->
 
@@ -134,11 +152,12 @@ export default {
       }
     },
     textarea: {
-      value: null,
+      value: "",
       error: {
         isError: false,
         msg: "필수항목입니다"
-      }
+      },
+      limit: false
     },
     server: {
       value: null,
@@ -154,13 +173,20 @@ export default {
       if (!this.isShow) return;
 
       if (this.validTarget(this.name, "이름을 입력해주세요"))
-        this.validNameLimitTen(this.name);
+        this.validName(this.name);
     }, 600),
+
     "email.value": _.debounce(function() {
       if (!this.isShow) return;
 
       if (this.validTarget(this.email, "이메일을 입력해주세요"))
         this.validEmail(this.email);
+    }, 600),
+
+    "textarea.value": _.debounce(function() {
+      if (!this.isShow) return;
+
+      if (this.validTarget(this.textarea)) this.validateTextarea(this.textarea);
     }, 600)
   },
 
@@ -202,7 +228,7 @@ export default {
       this.name.value = null;
       this.email.value = null;
       this.selectbox.value = 0;
-      this.textarea.value = null;
+      this.textarea.value = "";
       this.checkbox.value = false;
       this.isAllPass = false;
       this.isShowSecond = false;
@@ -270,13 +296,13 @@ export default {
      * @param {Object} target to apply target
      * @returns {Boolean}
      */
-    validNameLimitTen(target = {}) {
+    validName(target = {}) {
       const name = target.value;
       target.error.isError = false;
 
-      if (name && name.length > 10) {
+      if (name && name.length >= 10) {
         this.isAllPass = false;
-        this.setErrorMsg(target, "10자이내로 작성해주세요");
+        this.setErrorMsg(target, "10자 이내로 작성해주세요");
         return false;
       }
 
@@ -299,11 +325,39 @@ export default {
         return false;
       }
 
+      if (email.length >= 50) {
+        this.isAllPass = false;
+        this.setErrorMsg(target, "50자 이내로 작성해주세요");
+        return false;
+      }
+
+      return true;
+    },
+
+    /**
+     * @description validate textarea
+     * @param {Object} target to apply target
+     * @returns {Boolean}
+     */
+    validateTextarea(target = {}) {
+      const text = target.value;
+      target.error.isError = false;
+
+      if (text && text.length >= 500) {
+        this.isAllPass = false;
+        this.setErrorMsg(target, "500자 이내로 작성해주세요");
+        target.limit = true;
+      } else {
+        target.limit = false;
+      }
+
       return true;
     },
 
     /**
      * @description request to server
+     * @param {Object} params request parameters
+     * @returns {Promise}
      */
     requestToServer(params = {}) {
       return new Promise((resolve, reject) => {
@@ -322,11 +376,15 @@ export default {
       this.isAllPass = true;
 
       if (this.validTarget(this.name, "이름을 입력해주세요"))
-        this.validNameLimitTen(this.name);
+        this.validName(this.name);
+
       if (this.validTarget(this.email, "이메일을 입력해주세요"))
         this.validEmail(this.email);
+
       this.validTarget(this.checkbox);
-      this.validTarget(this.textarea);
+
+      if (this.validTarget(this.textarea)) this.validateTextarea(this.textarea);
+
       if (!this.isVerifyCaptchar) this.isAllPass = false;
 
       if (!this.isAllPass) return;
@@ -348,6 +406,7 @@ export default {
      * @description click to close button
      */
     clickCloseButton() {
+      grecaptcha.reset(0);
       this.init();
       this.$emit("close");
     }
@@ -674,6 +733,23 @@ input[id="cb1"] {
 .subbox.checkbox .errorMsg {
   color: #ff2121;
   position: static;
+}
+
+.subbox.textarea .errorMsg {
+  float: left;
+}
+
+.subbox.textarea .checkNumber {
+  float: right;
+  font: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;
+}
+
+.subbox.textarea .checkNumber .limit {
+  color: #ff0000;
+}
+
+.subbox.textarea .checkNumber strong {
+  color: #000;
 }
 
 .errorMsg.server {

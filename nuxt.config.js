@@ -27,12 +27,12 @@ export default {
       },
       {
         property: 'og:description',
-        content: '누구나 쉽게 찾고 쓰는 데이터 검색의 중심. 헤매지 말고 여기로 오세요.'
+        content: '데이터가 필요할 땐, 헤매지말고 Data-On'
       },
       // { name: 'keyword', content: '데이터, 공공, 공공데이터, 좌표, 검색'},
       {
         property: 'og:title',
-        content: '데이터온'
+        content: '[빅데이터 플랫폼] 데이터온'
       },
       {
         property: 'og:image',

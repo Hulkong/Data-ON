@@ -46,18 +46,27 @@
         </div>  -->
 
         <p class="btxt">데이터 차원</p>
-        <p class="stxt">
-            <span>데이터 행 <i>{{$setComma(info.dt_row)||0}}개</i></span>
-            <span class="abr">데이터 컬럼 <i class="txtrgt">{{$setComma(info.dt_column)||0}}개</i></span>
-        </p>
-        <a  v-if="info.tbresultMeta"
-            href="javascript:void(0);"
-            @click="sendLink(info.tbresultMeta)"
-            target="_tab"
-            class="link-btn"
-        >
-            <span>제공페이지로 이동</span>
-        </a>
+        <template v-if="info.dt_row && info.dt_column">
+            <p class="stxt">
+                <span>
+                    데이터 행 <i v-if="info.dt_row > 1000000">100만개 이상</i><i v-else>{{$setComma(info.dt_row)}}개</i>
+                </span>
+                <span class="abr">
+                    데이터 컬럼 <i class="txtrgt" v-if="info.dt_column > 1000000">100만개 이상</i><i class="txtrgt" v-else>{{$setComma(info.dt_column)}}개</i>
+                </span>
+            </p>
+            <a  v-if="info.tbresultMeta"
+                href="javascript:void(0);"
+                @click="sendLink(info.tbresultMeta)"
+                target="_tab"
+                class="link-btn"
+            >
+                <span>제공페이지로 이동</span>
+            </a>
+        </template>
+        <template v-else>
+            <img src="/images/Content/img_notify_wait_184h_02.png" class="meta-default"/>
+        </template>
     </div> 
 </template>
 
@@ -83,13 +92,15 @@
 <style scoped src="../assets/css/content.css"></style>
 <style scoped>
 .search-wrap .list .metas{float:left; width:15%; margin-left:4%;position:relative;min-height: 120px;}
-.search-wrap .list .metas .link-btn{width:100%;height:30px; text-align:left;  box-sizing:border-box; padding-left:26px; line-height:29px; font-size:12px; border:1px solid #0075c1; position:absolute; left:0px; top:73px; color:#0075c1; letter-spacing:-0.03em; margin:14px 10px 10px 0px;}
-.search-wrap .list .metas .link-btn:after{width:10px;height:10px; right:5px;background:url(/images/Sub/ico-nwin.jpg) no-repeat center center; margin-top:3px; display:block;content:""; top:50%;margin-top:-5px; position:absolute;}
-.search-wrap .list .metas .stxt{position:relative;margin-top:11px;}
-.search-wrap .list .metas .stxt span i{font-weight:700; font-size:20px; color:#0075c1; line-height:1em;margin-top:6px ; display:block;}
-.search-wrap .list .metas .stxt span i.txtrgt{text-align: right;}
+.search-wrap .list .metas >>> .link-btn{width:100%;height:30px; text-align:left;  box-sizing:border-box; padding-left:26px; line-height:29px; font-size:12px; border:1px solid #0075c1; position:absolute; left:0px; top:73px; color:#0075c1; letter-spacing:-0.03em; margin:14px 10px 10px 0px;}
+.search-wrap .list .metas >>> .link-btn:after{width:10px;height:10px; right:5px;background:url(/images/Sub/ico-nwin.jpg) no-repeat center center; margin-top:3px; display:block;content:""; top:50%;margin-top:-5px; position:absolute;}
+.search-wrap .list .metas >>> .stxt{position:relative;margin-top:11px;}
+.search-wrap .list .metas >>> .stxt span i{font-weight:700; font-size:17px; color:#0075c1; line-height:1em;margin-top:6px ; display:block;}
+.search-wrap .list .metas >>> .stxt span i.txtrgt{text-align: right;}
+
+.search-wrap .list .metas >>> img.meta-default {padding-top:20px;width:100%;}
 @media only screen and (max-width:1300px) {
-        .search-wrap .list .metas .link-btn{height:30px; line-height:29px; top:70px; padding-left:19px;}
+    .search-wrap .list .metas .link-btn{height:30px; line-height:29px; top:70px; padding-left:19px;}
 }
 @media only screen and (max-width:1160px) {
     .search-wrap .list .metas .link-btn{top:70px;padding-left: 8px;text-indent:0px;} 

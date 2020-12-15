@@ -283,7 +283,7 @@ export const mutations = {
      */
     addOtherList:(state,result) =>{
         var data = result.data;
-        var comData = result.store.$findTitlekeyword(data, state['otherList'].option.param.keyword);
+        var comData = result.store.$findTitlekeyword(data, state['otherList'].option.param.keyword, 20);
         state['otherList'].result = comData;
     },
     /**

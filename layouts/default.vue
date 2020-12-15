@@ -11,7 +11,7 @@
       <include-header :keyword="keyword" v-if="!main_class || (main_class && msec01H <= pageY)"></include-header>
       <!-- e : #header-wrap //-->
       <!-- s: fog1 -->
-      <div class="header-slider-ovclick" v-show="headerFog" @click="closeFog('pop')" />
+      <div class="header-slider-ovclick" v-show="headerFog" @click="closeFog('pop')" ></div>
       <!-- e: fog1 -->
       <!-- s : #container-wrap //-->
 

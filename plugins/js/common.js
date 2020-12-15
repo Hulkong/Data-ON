@@ -272,12 +272,13 @@ Vue.prototype.$downloadFile = (files, callback) => {
 }
 /**
  * url 복시 ( 클립보드 복사 )
- * @param {*} id 
+ * @param {*} id 글번호
  */
 Vue.prototype.$clipBoardCopy = (id) => {
     let copyElem = document.createElement('input');
         copyElem.setAttribute('type', 'text');  
-        copyElem.value = window.location.href + "&id=" + id;
+        if(id) copyElem.value = window.location.href + "&id=" + id;
+        else copyElem.value = window.location.href;
         document.body.appendChild(copyElem);
 
         copyElem.select();
@@ -298,22 +299,31 @@ Vue.prototype.$scrollToTop = () => {
 
 
 
-
+Vue.prototype.$trim = (str) => {
+    if(str)
+        return str.replace(/^\s+|\s+$/g,"");
+    else    
+        return str;
+}
 
 /**
  * 검색어 유효성 검사 (custom)
  * @param {*} keyword         검색어
  */
-Vue.prototype.$validate = (keyword) => {
+Vue.prototype.$validateLen = (keyword, min, max) => {
     var result = {'status': true, 'message': '검색'}
-    // 검색어 최소 2자에서 최대 100자까지
-    if(keyword.length < 2){
+    if(!keyword){
+        result.status = false;
+        result.message = "검색어를 입력해주세요.";
+    }
+    // 검색어 최소 2자에서 최대 50자까지
+    if(keyword && keyword.length < min){
         result.status = false;
         result.message = "검색어를 2자 이상 입력해주세요.";
     } 
-    if(keyword.length > 100){
+    if(keyword && keyword.length > max){
         result.status = false;
-        result.message = "검색어를 100자 이하로 입력해주세요.";
+        result.message = "검색어를 50자 이하로 입력해주세요.";
     }
     
     return result;

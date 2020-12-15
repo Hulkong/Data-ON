@@ -61,7 +61,8 @@ export default {
 		 * 검색
 		 */
 		goSearch: function(){
-			var valids = this.$validate(this.searchWord);
+			this.searchWord = this.$trim(this.searchWord);
+			var valids = this.$validateLen(this.searchWord, 2, 50);
 			if(valids.status){
 				// 구글 애널리틱스 추가
 				let device = "pc";

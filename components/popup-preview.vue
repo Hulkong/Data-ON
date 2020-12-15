@@ -31,12 +31,12 @@
                     </li>
                     <li>
                         <p class="btxt">등록일</p>
-                        <p class="stxt">{{getPreviewInfo.dt_date}}</p>
+                        <p class="stxt">{{$stringToDate(getPreviewInfo.dt_date)}}</p>
                     </li>
                 </ul>
             </div>
             <h4>※ 샘플데이터 최대 100개 행 </h4>
-            <div class="list nscrolls">
+            <div class="list nscrolls" v-if="getPreviewSampleHeader">
                 <table v-if="getPreviewSampleHeader !== undefined">
                     <colgroup>
                         <col v-for="(item, index) in getPreviewSampleHeader" 
@@ -66,6 +66,9 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="list" v-else>
+                <img src="/images/Content/img_notify_wait_308h.png" class="meta-default"/>
             </div>
         </div>
         <div class="is-btm">

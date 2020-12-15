@@ -157,27 +157,34 @@ export default {
 		 */
 		goSearch: function(){
 			var that = this;
-			// 키워드 저장
-			this.setKeyword({
-				name: that.name,
-				keyword: that.keyword
-			});
-			// 검색 조건 저장
-			this.setSearchCondition({
-				name: that.name,
-				searchCondition: that.searchCondition
-			});
-			// 검색 조건 저장
-			this.setPage({
-				name: that.name,
-				page: 1
-			});
+			that.keyword = this.$trim(that.keyword);
+			var valids = this.$validateLen(that.keyword, 1, 50);
+			if(valids.status){
+				// 키워드 저장
+				this.setKeyword({
+					name: that.name,
+					keyword: that.keyword
+				});
+				// 검색 조건 저장
+				this.setSearchCondition({
+					name: that.name,
+					searchCondition: that.searchCondition
+				});
+				// 검색 조건 저장
+				this.setPage({
+					name: that.name,
+					page: 1
+				});
 
-			// 구글 애널리틱스 추가
-			this.$sendGA(this,'공지 검색','검색', that.keyword);
+				// 구글 애널리틱스 추가
+				this.$sendGA(this,'공지 검색','검색', that.keyword);
 
-			// 검색 조건으로 리스트 다시가져오기
-			this.fetchData();
+				// 검색 조건으로 리스트 다시가져오기
+				this.fetchData();
+			}else{
+				alert(valids.message);
+			}
+			
 		},
 		setCondition:function(type){
 			this.searchCondition = type;

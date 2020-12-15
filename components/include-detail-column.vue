@@ -1,7 +1,8 @@
 <template lang="html">
     <div class="subms">
         <p class="btxt">데이터 요약</p>
-        <div class="txt">
+
+        <div class="txt" v-if="info.length > 0">
             <table>
                 <colgroup>
                     <col width="*"/>
@@ -35,9 +36,10 @@
                         <col width="13%"/>
                         <col width="13%"/>
                     </colgroup>
-                    <tbody v-if="info.length > 0">
-                        <template  v-for="colItem in info" >
-                            <tr v-if="colItem.id !== undefined" :key="colItem.id">
+                    <tbody>
+                        <!-- <template  v-for="colItem in info" > -->
+                            <!-- <tr v-if="colItem.id !== undefined" :key="colItem.id"> -->
+                            <tr v-for="colItem in info" :key="colItem.id">
                                 <td 
                                     :class="{onPointer: getCategory =='column'}"
                                     v-html="$regExpText(colItem.col_nm,getKeyword)">
@@ -49,18 +51,15 @@
                                 <td>{{colItem.col_mid}}</td>
                                 <td>{{colItem.col_null?'있음':'없음'}}</td>
                             </tr>
-                        </template>
-                    </tbody>
-                    <tbody v-else>
-                        <tr>
-                            <td colspan="7" style="text-align:center;">
-                                데이터가 없습니다.
-                            </td>
-                        </tr>
+                        <!-- </template> -->
                     </tbody>
                 </table>
             </div>
+        </div> 
+        <div class="txt no-data" v-else>
+            <img src="/images/Content/img_notify_wait_184h_03.png" class="meta-default"/>
         </div>
+        
     </div>
 </template>
 
@@ -84,4 +83,5 @@
 <style scoped src="../assets/css/content.css"></style>
 <style scoped>
 .search-wrap .list .subms >>> .onPointer span{background:#fffab7; padding:0 1px;}
+.search-wrap .list .subms >>> .txt.no-data{text-align:center;padding-top:10px;}
 </style>
