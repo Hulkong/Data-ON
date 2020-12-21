@@ -1,4 +1,4 @@
-export const state = () => ({ 
+export const state = () => ({
     notice: {
         url: '/api/notices/',
         param: {
@@ -17,16 +17,16 @@ export const state = () => ({
             result:[]
         }
     }
-}); 
+});
 
-export const getters = { 
+export const getters = {
     getUrl: (state) => (id) => {
         return state[id].url;
     },
     getParam: (state) => (id) => {
         return state[id].param;
     },
-    
+
     getcPage:(state) => (id) => {
         return state[id].param.page;
     },
@@ -47,10 +47,18 @@ export const getters = {
         return state[id].result.results;
     },
     getNoticeList:(state) => (id) => {
-        if(state[id].result.results === undefined)
+        if(state[id].result.results === undefined){
             return [];
-        else
-            return state[id].result.results['notice_n_list'];
+        }else{
+            const totalCount = state[id].result.count;
+            const cpage = state[id].param.page;
+            const listsize = state[id].param.page_size;
+            return state[id].result.results['notice_n_list'].map((obj, index) => {
+                obj.num = totalCount - ((cpage -1)*listsize) - index;
+                return obj;
+            });
+
+        }
     },
     getNotice:(state) => (id) => {
         if(state[id].result.results === undefined)
@@ -66,16 +74,48 @@ export const getters = {
     },
     getDetailResult:(state) => (id) => {
         return state['detail'][id].result;
+    },
+    // element library 사용으로 공지 글, 일반 글 함께 조회
+    getNoticeOneList: (state) => (id) => {
+      let list = [],
+        results = state[id].result.results
+
+      if (results) {
+        list = [
+          ...results['notice_y_list'],
+          ...results['notice_n_list']
+        ]
+      }
+
+      return list
+    },
+    // element library 사용으로 file 정보 key 추가
+    getDetailAdminResult:(state) => (id) => {
+      const result = state['detail'][id].result
+
+      if (result) {
+        const files = result.tbattachFiles
+
+        if (files) {
+          files.forEach(function(data, index) {
+            const file = files[index]
+            file.name = data.origin_nm
+            file.url = data.file_url
+          })
+        }
+      }
+
+      return result
     }
-    
+
 };
 
-export const mutations = { 
+export const mutations = {
     addList: (state,result) => {
-        state[result.storeName].result = result.data; 
+        state[result.storeName].result = result.data;
     },
     addDetail: (state,result) => {
-        state['detail'][result.storeName].result = result.data; 
+        state['detail'][result.storeName].result = result.data;
     },
     setSearchCondition:(state, obj) => {
         state[obj.name].param.searchCondition = obj.searchCondition
@@ -89,13 +129,13 @@ export const mutations = {
 };
 
 export const actions = {
-    async getData({ commit }, posts) { 
+    async getData({ commit }, posts) {
         await this.dispatch('setData', posts).then(result => {
             result.storeName = posts.storeName;
             commit('addList', result);
         });
     },
-    async getDetailData({ commit }, posts) { 
+    async getDetailData({ commit }, posts) {
         await this.dispatch('setData', posts).then(result => {
             result.storeName = posts.storeName;
             commit('addDetail', result);

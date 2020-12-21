@@ -1,16 +1,18 @@
 import axios from 'axios';
-export const strict = false; 
+export const strict = false;
 
-/* ** STATES */ 
-export const state = () => {}; 
+const cookieparser = process.server ? require('cookieparser') : undefined
 
-/* ** GETTERS */ 
+/* ** STATES */
+export const state = () => {};
+
+/* ** GETTERS */
 export const getters = { };
 
-/* ** MUTATIONS(동기 처리) */ 
-export const mutations = { }; 
+/* ** MUTATIONS(동기 처리) */
+export const mutations = { };
 
-/* ** ACTIONS (비동기처리) */ 
+/* ** ACTIONS (비동기처리) */
 export const actions = {
     setData({ commit }, posts) {
         return new Promise( function(resolve, reject){
@@ -36,14 +38,15 @@ export const actions = {
                 // window.$nuxt.$router.push({path: '/error/500', params:{ 'message' : e.statusCode}})
             }
         })
-        
+
     },
     setPost({ commit }, posts) {
         return new Promise( function(resolve, reject){
             axios
             .post(
-                posts.url, 
-                posts.param
+                posts.url,
+                posts.param,
+                posts.config
             )
             .then(res => {
                 resolve(res)
@@ -57,9 +60,23 @@ export const actions = {
             console.log(e);
             return [];
         })
-        
+
+    },
+  nuxtServerInit({ commit }, { req }) {
+    let auth = null
+
+    if (req.headers.cookie) {
+      const parsed = cookieparser.parse(req.headers.cookie)
+
+      try {
+        auth = JSON.parse(parsed.auth)
+      } catch (err) {
+        // No valid cookie found
+      }
     }
 
-}; 
+    commit('auth/setAuth', auth)
+  }
+};
 
 

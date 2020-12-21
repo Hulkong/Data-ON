@@ -398,3 +398,22 @@ Vue.prototype.$deviceChk = () => {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;
     else return false;
 }
+
+
+Vue.prototype.$markToHtml = (text) => {
+    var html = text;
+    
+    marked.setOptions({
+        renderer: new marked.Renderer(),
+        gfm: true,
+        headerIds: false,
+        tables: true,
+        breaks: true,
+        pedantic: false,
+        smartLists: true,
+        smartypants: false
+    });
+    if( typeof html !== 'undefined' && html !== null) html = marked(html);
+    
+    return html;
+}

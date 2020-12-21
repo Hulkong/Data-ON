@@ -8,7 +8,7 @@
 					<h1 class="logo"><a href="/"><span class="blind">Data-on</span></a></h1>
 					<nuxt-link to="/notice" class="bt-notice"><span>공지사항</span></nuxt-link> 
 				</div>
-				<h3><span class="typing-txt">누구나 쉽게 찾고 <br />활용하는 데이터플랫</span></h3>
+				<h3><span class="typing-txt">누구나 쉽게 찾고 <br />활용하는 데이터플랫폼</span></h3>
 				<div class="search">
 					<p class="chk-input">
 						<input type="text" 
@@ -36,7 +36,9 @@
 							><span class="blind">도움말</span></a>
 
 							<div class="tooltip" v-show="regionPop">
-								<p>행정안전부에서 제공하는 통계지역경계 파일입니다.</p>
+								<p>
+									행정안전부에서 공개하는 도로명주소 전자지도 정보(www.juso.go.kr)와 통계청 통계지리정보서비스(sgis.kostat.go.kr)에서 제공하는 행정동 경계 파일을 기반으로 변경 이력을 반영한 파일(github.com/vuski/admdongkor)을 제공합니다.
+								</p>
 							</div>
 						</div>
 						<div class="txt" v-if="getResult('region') && getResult('region').length > 0">
@@ -77,7 +79,9 @@
 								@mouseout="stdrPop = !stdrPop"
 							><span class="blind">도움말</span></a>
 							<div class="tooltip over" v-show="stdrPop">
-								<p>행정안전부에서 제공하는 행정표준코드 관리 체계 파일입니다.</p>
+								<p>
+									통계분류포털(kssc.kostat.go.kr)에서 제공하는 행정구역분류 총괄표에 제시된 행정구역별 코드와 표준 명칭을 엑셀파일로 제공합니다. 행정구역 수준에 따라 시트(sheet)로 분리하여 코드를 제공하며, 결합할 수 있는 가장 높은 수준의 행정구역코드까지 제공합니다.
+								</p>
 							</div>
 						</div>
 						<div class="txt"  v-if="getResult('stdr') && getResult('stdr').length > 0">
@@ -319,7 +323,10 @@ export default {
 }
 #contents >>> .msec-01 .minit .logo a{ 
 	display:block;width:166px;background:url(/images/logo.png) no-repeat left center;  background-size:100% auto; -webkit-transition: all 0s ease-in-out;-moz-transition: all 0s ease-in-out;-o-transition: all 0s ease-in-out;transition: all 0s ease-in-out;
- }
+}
+#contents >>> .msec-02 .con .tit .tooltip {
+	height:140px;
+}
 
 @media only screen and (max-width:999px) {
 	#contents >>> .msec-01 h3 span{display:inline-block;vertical-align:top;text-align:center; line-height:1.5em;}

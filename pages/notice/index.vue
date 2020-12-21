@@ -54,8 +54,7 @@
 								v-for="(item) in getNotice(name)" 
 								:key="item.id"	
 							>
-								<td v-if="item.notice_yn" class="notice"><span class="ntxt">공지</span></td>
-								<td v-else>{{item.id}}</td>
+								<td><span class="ntxt">공지</span></td>
 								<td class="l">
 									<nuxt-link :to="{ path: '/notice/'+item.id, query: posts.param}">
 										{{$cutText(item.title,'...', 40)}} 
@@ -74,8 +73,7 @@
 								v-for="(item) in getNoticeList(name)" 
 								:key="item.id"	
 							>
-								<td v-if="item.notice_yn" class="notice"><span class="ntxt">공지</span></td>
-								<td v-else>{{item.id}}</td>
+								<td>{{item.num}}</td>
 								<td class="l">
 									<nuxt-link :to="{ path: '/notice/'+item.id, query: posts.param}">
 										{{$cutText(item.title,'...', 40)}} 
@@ -114,6 +112,15 @@ export default {
 			'getNotice', 		 		 // 각 게시판 list의 결과값 가져오기
 			'getCount', 		 	 // 각 게시판 list의 총 수
 		]),
+		totalCount: function(){ // 각 게시판 list의 총 수
+            return this.$store.getters['board/getCount'](this.name);
+        },
+		cpage: function(){      // 현재 페이지
+			return this.$store.getters['board/getcPage'](this.name);
+        },
+		listsize: function(){   // 리스트 사이즈
+            return this.$store.getters['board/getListSize'](this.name);
+        },
 	},
     data() {
 		return {

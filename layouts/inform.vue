@@ -52,7 +52,7 @@
               </li>
             </ul>
             <span
-              class="contents-detail"
+              class="contents"
             >이외에도 이용자가 이벤트 등에 참여할 때 추가적인 개인정보 수집이 발생할 수 있습니다. 추가로 개인정보를 수집할 경우에는 해당 개인정보의 수집 시점에서 이용자에게 “수집하는 개인정보 항목, 개인정보의 수집 및 이용목적, 개인정보의 보관기간 및 파기방법”에 대해 안내하고 동의를 받습니다</span>
           </div>
 
@@ -85,14 +85,14 @@
           <sub class="sub-title"></sub>
           <div class="contents-layout">
             <p class="contents-title">1) 개인정보의 제3자 제공</p>
-            <ul>
-              <li>
-                <span
+             <span
                   class="contents"
                 >회사는 이용자의 개인정보를 위에서 정의한 개인정보의 수집 및 이용목적에서 명시한 범위 내에서만 처리하며, 이용자의 동의, 법률의 특별한 규정 등 개인정보 보호법 제17조에 해당하는 경우에만 개인정보를 제3자에게 제공합니다.</span>
+            <ul>
+              <li>
+                <span class="contents indent">현재, 데이터온 서비스 이용자에 대한 개인정보를 제3자에게 제공하고 있지 않습니다.</span>
               </li>
             </ul>
-            <span class="contents-detail indent">현재, 데이터온 서비스 이용자에 대한 개인정보를 제3자에게 제공하고 있지 않습니다.</span>
           </div>
 
           <div class="contents-layout">
@@ -318,7 +318,7 @@
                 </tr>
                 <tr>
                   <th>전화번호</th>
-                  <td>02-6956-7541</td>
+                  <td>02-6956-7542</td>
                   <th>전화번호</th>
                   <td>02-6956-7541</td>
                 </tr>
