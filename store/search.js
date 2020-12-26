@@ -71,6 +71,7 @@ export const state = () => ({
                 id: ''
             }
         },
+        loading: true,
         result: {}
     },
     allfilter: {    // 필터 전체 보기
@@ -159,6 +160,9 @@ export const getters = {
         return state['allfilter'].itemname;
     },
     /* 팝업( 미리보기 )  */
+    getPreLoading: (state) => {
+        return state['preview'].loading;
+    },
     getPreviewOn:(state) => {
         return state['preview'].previewon;
     },
@@ -174,9 +178,10 @@ export const getters = {
         else return 0;
     },
     getPreviewInfo:(state) => {
+        var id = state['preview'].option.param.id;
         var data = state['preview']['result'];
         if(data.result !== undefined) return data.result;
-        else return {};
+        else return state['searchList'].result.filter(obj => obj.id == id)[0];
     },
     getPreviewSampleHeader:(state) => {
         var data = state['preview']['result'];
@@ -236,6 +241,9 @@ export const mutations = {
     setLoading:(state, loading) => {
         state.loading = loading;
     },
+    setPreLoading:(state, loading) => {
+        state['preview'].loading = loading;
+    },
     /**
      * 검색 결과 저장
      */
@@ -290,7 +298,7 @@ export const mutations = {
      * 미리보기 데이터 저장
      */
     addPreview:(state, result)=>{
-        state['preview'].result = result.data;
+        if(result) state['preview'].result = result.data;
     },
 
     /**
@@ -511,6 +519,7 @@ export const actions = {
     async getPreviewData({ commit }, posts) { 
         await this.dispatch('setData', posts).then(function(result){
             commit('addPreview', result);
+            commit('setPreLoading', false);
         });
     },
     /**
@@ -519,7 +528,7 @@ export const actions = {
      * @param {*} posts 
      */
     async addCounts({ commit, state }, param) {
-        let url = state.counts.url + param.id+"/"; 
+        let url = state.counts.url; 
         await this.dispatch('setPost', {
             'url':url, 
             'param': param.post

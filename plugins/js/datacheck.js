@@ -46,8 +46,8 @@ function  regExp_test(str, keyword){
         }
 
         for(var i = 0; i < str.length; i++){
+            if(indices.includes((i-keyword.length))) result += "</span>"
             if(indices.includes(i)) result += "<span>";
-            else if(indices.includes((i-keyword.length))) result += "</span>"
             
             result += str[i];
         }

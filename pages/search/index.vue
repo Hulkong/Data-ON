@@ -36,12 +36,12 @@
             </a>
             <ul v-if="orderList.length > 0">
               <li
-                v-for="item in orderList"
-                :key="item.id"
-                :class="{'active':(getOrderby == item.id)}"
+                v-for="orderItem in orderList"
+                :key="orderItem.id"
+                :class="{'active':(getOrderby == orderItem.id)}"
               >
-                <a href="javascript:void(0);" @click="changeOrderby(item.id, item.name)">
-                  <span>{{item.name}}</span>
+                <a href="javascript:void(0);" @click="changeOrderby(orderItem.id, orderItem.name)">
+                  <span>{{orderItem.name}}</span>
                 </a>
               </li>
             </ul>
@@ -217,7 +217,7 @@
                   v-if="item.tbresultEvaluation !== undefined && item.tbresultEvaluation !== null"
                 >
                   <chart-radar
-                    v-if="docW < 840 && chkDetail(item.id)"
+                    v-if="docW < 860 && chkDetail(item.id)"
                     :radarId="item.id"
                     :radarData="cleanData(item.tbresultEvaluation)"
                     ref="radar2"
@@ -342,6 +342,9 @@ export default {
 		this.$nuxt.$on('search-search',(keyword, nonScroll='up')=>{
 			// 로딩 화면 on
 			this.setLoading(true);
+
+			// 자세히보기 다 닫기
+			this.detail_id =[];
 			
 			// 키워드 업데이트
 			if(keyword !== undefined){
@@ -437,7 +440,7 @@ export default {
 			var that = this;
 			setTimeout(function(){
 				that.docW = $('#doc').outerWidth();
-				that.chartReload();
+				if(!that.$deviceChk()) that.chartReload();
 			},10);
 		},
 
@@ -451,32 +454,23 @@ export default {
 		 * @param {*} id   데이터 아이디
 		 * @param {*} type 파일 형식
  		 */
-		openDetail: function(id, type){
+		openDetail: function(id, type){ 
 			// 구글 애널리틱스 추가
 			this.$sendGA(this,'검색결과 자세히보기','자세히보기', id);
-
-			if('ZIP,zip'.indexOf(type) != -1){
-				alert("zip 형식의 데이터는 자세히보기를 제공하지않습니다.");
-				return false;
-			}
-
-			if('shap,SHAP'.indexOf(type) != -1){
-				alert("shap 형식의 데이터는 자세히보기를 제공하지않습니다.");
-				return false;
-			}
 
 			//버튼변경, 상세페이지on/off
 			if(this.detail_id.includes(id)){	// 닫기
 				this.detail_id = this.detail_id.filter(d_id => d_id != id);
 			}else{						// 열기
-				this.detail_id.push(id);
+				this.detail_id.push(Number(id));
 
 				// 영역 스크롤 생성
 				var that = $('.detail_'+id);
 				this.$setNiceScrolls(that.find('.nscrolls'));
 
 				// 조회수 추가
-				this.addCounts({'id': id, 'post':{'col_nm': 'dt_hit'}});
+				this.addCounts({'post':{'col_nm': 'dt_hit', 'id': id}});
+
 			}
 		},
 		/**
@@ -500,14 +494,14 @@ export default {
 			this.$clipBoardCopy(id);
 
 			// 공유 수 추가
-			this.addCounts({'id': id, 'post':{'col_nm': 'dt_copy'}});
+			this.addCounts({'post':{'col_nm': 'dt_copy', 'id': id}});
 		},
 		/**
 		 * 복사한 url 붙여넣기했을때
 		 */
 		setPasteData: function(id){
 			// 카운터 추가
-			this.addCounts({'id': id, 'post':{'col_nm': 'dt_paste'}});
+			this.addCounts({'post':{'col_nm': 'dt_paste', 'id': id}});
 
 			// 데이터 검색
 			let posts = _.cloneDeep(this.getPasteOption);
@@ -581,12 +575,9 @@ export default {
 			// 구글 애널리틱스 추가
 			this.$sendGA(this,'검색결과 미리보기','미리보기', id);
 
-			if('ZIP,zip'.indexOf(type) != -1){
-				alert("zip 파일은 미리보기를 제공하지않습니다.");
-			}else{
-				$nuxt.$emit('default-fog', true, 'pop');
-				this.setPreview({'open': true, 'pop_id': id});
-			}
+			$nuxt.$emit('default-fog', true, 'pop');
+			this.setPreview({'open': true, 'pop_id': id});
+
 		},
 		downCallback: function(file){
             // 구글 애널리틱스 추가
@@ -733,6 +724,7 @@ export default {
 	.search-wrap .list >>> .inups .tit {
 		line-height: 1.8em;
 		font-size: 16px;
+		word-break: break-all;
   }
   .list >>> .ex.off {
     display: none;

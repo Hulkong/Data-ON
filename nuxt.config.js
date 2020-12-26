@@ -67,6 +67,7 @@ export default {
     '~/assets/css/js/owl.carousel.min.css',
     '~/assets/css/js/slick.css',
     '~/assets/css/js/slick-theme.css',
+    'element-ui/lib/theme-chalk/index.css',
   ],
   /*
    ** Plugins to load before mounting the App
@@ -110,7 +111,12 @@ export default {
       src: '~/plugins/js/ga.js',
       mode: 'client'
     },
-    '~/plugins/js/datacheck.js'
+    '~/plugins/js/datacheck.js',
+    '~/plugins/js/element-ui',
+    {
+      src: '~/plugins/js/ckeditor4-vue.js',
+      mode: 'client'
+    }
   ],
   /*
    ** Auto import components
@@ -166,7 +172,7 @@ export default {
     config: {
       // this are the config options for `gtag
       // check out official docs: https://developers.google.com/analytics/devguides/collection/gtagjs/
-      anonymize_ip: true, // anonymize IP 
+      anonymize_ip: true, // anonymize IP
       send_page_view: false, // might be necessary to avoid duplicated page track on page reload
       linker: {
         domains: ['data-on.co.kr']
@@ -208,8 +214,6 @@ export default {
     }
   },
   router: {
-    // 모든 페이지에서 middleware/user-agent.js를 실행하세요
-    middleware: 'auth',
     extendRoutes(routes, resolve) {
       routes.push({
         name: 'pageNotFound',

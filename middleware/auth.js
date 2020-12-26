@@ -1,9 +1,5 @@
-import axios from 'axios'
-
-/**
- * interceptor1
- * @param {*} param0 
- */
-export default function ({ route, vue }) {
-    console.log('router middleware');
+export default function ({ store, redirect }) {
+  if (!store.state.auth.auth) {
+    return redirect('/admin/login')
+  }
 }

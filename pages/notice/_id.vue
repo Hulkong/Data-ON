@@ -110,21 +110,7 @@ export default {
          * markdown to html 변환
          */
         chngHtml: function(text){
-            var html = text;
-
-            marked.setOptions({
-                renderer: new marked.Renderer(),
-                gfm: true,
-                headerIds: false,
-                tables: true,
-                breaks: true,
-                pedantic: false,
-                smartLists: true,
-                smartypants: false
-            });
-            if( typeof html !== 'undefined' && html !== null) html = marked(html);
-            
-            return html;
+            return this.$markToHtml(text);
         },
         downCallback: function(file){
             // 구글 애널리틱스 추가
