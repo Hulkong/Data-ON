@@ -8,7 +8,7 @@
       <span id="text">관리자 페이지</span>
     </el-col>
 
-    <el-col :span="12" class="pad10t" id="right">
+    <el-col :span="12" class="pad10t tr" id="right">
       <NuxtLink to="/">데이터온으로 가기</NuxtLink>
       <span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
       <a v-if="getAuth" href="javascript:" @click="logout">로그아웃</a>
@@ -34,7 +34,7 @@
         await this.postLogout()
 
         if (this.getAuth) {
-          this.$alert('error')
+          this.$alert('오류입니다.')
         } else {
           this.$router.push('/admin/login')
         }
@@ -58,13 +58,13 @@
 
   #right {
     color: #fff;
-    text-align:right;
   }
 
   #right>a {
     color: #fff;
   }
-  @media only screen and (max-width: 999px) {
-    #logo #text {display: none}
+
+  @media only screen and (max-width: 789px) {
+    #text { display: none; }
   }
 </style>

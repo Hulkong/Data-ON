@@ -2,7 +2,7 @@
   <div>
     <el-row>
       <el-col>
-        <h2 class="u-tit01 home-text">admin home</h2>
+
       </el-col>
     </el-row>
   </div>
@@ -10,6 +10,11 @@
 
 <script>
 export default {
-  layout: 'admin'
+  layout: 'admin',
+  mounted() {
+    // 회원 검색 redirect
+    //this.$router.push('/admin/prf/lst')
+  }
 }
 </script>
+

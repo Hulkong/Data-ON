@@ -2,7 +2,7 @@
   <el-row>
     <el-col>
       <el-menu style="border-right: 0;" default-active="" @open="handleOpen" @close="handleClose">
-        <!--        TODO: 1차 반영 주석-->
+        <!--        TODO: 2차 반영 주석-->
 <!--        <el-submenu index="1">
           <template slot="title">
             <span>회원정보</span>
@@ -27,7 +27,7 @@
           </NuxtLink>
         </el-submenu>
 
-        <!--        TODO: 1차 반영 주석-->
+        <!--        TODO: 2차 반영 주석-->
 <!--        <el-submenu index="3">
           <template slot="title">
             <span>설정</span>

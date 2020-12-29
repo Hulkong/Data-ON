@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export const state = () => ({
   list: {
     url: '/api/inquires/',
@@ -65,6 +67,12 @@ export const mutations = {
   },
   addDetail: (state, result) => {
     if (result) {
+      const data = result.data
+
+      if (data.content) {
+        data.content = Vue.prototype.$markToHtml(data.content)
+      }
+
       state['detail'].result = result.data
     }
   },

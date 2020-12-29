@@ -14,19 +14,19 @@ i, em{font-style:normal}
 .bd-line{background:#f7f7f7;}
 .bd-line.m-show{display:none;}
 	@media only screen and (max-width:1300px) {
-		
+
 	}
 	@media only screen and (max-width:999px) {
-		.bd-line{height:10px; width:calc(100% + 40px); margin-left:-20px;}	
+		.bd-line{height:10px; width:calc(100% + 40px); margin-left:-20px;}
 	}
 	@media only screen and (max-width:860px) {
 		.bd-line.m-show{display:block;}
 	}
 	@media only screen and (max-width:680px) {
-		.bd-line{width:calc(100% + 30px); margin-left:-15px;}	
+		.bd-line{width:calc(100% + 30px); margin-left:-15px;}
 	}
 	@media only screen and (max-width:480px) {
-		
+
 	}
 
 /*===========================================
@@ -44,6 +44,14 @@ i, em{font-style:normal}
 	@media only screen and (max-width:1300px) {
 		.u-tit01{font-size:21px; margin-bottom:20px}
 	}
+
+/*===========================================
+  u-tit02
+=============================================*/
+.u-tit02{font-size:23px; font-weight:500; color:#000000; letter-spacing:-0.01em; line-height:1em; margin-bottom:30px;}
+@media only screen and (max-width:1300px) {
+  .u-tit02{font-size:19px; margin-bottom:20px;}
+}
 
 /*===========================================
   u-tab
@@ -83,30 +91,30 @@ i, em{font-style:normal}
 .chk-input {display:inline-block; vertical-align:top; position:relative;}
 .chk-input input{height:48px;border:none; font-weight:400; letter-spacing:-0.67px; background:#fff; color:#1f1f1f; padding:0 12px;font-size:16px; box-sizing:border-box; display:block; width:100%; position:relative;}
 .chk-input input::placeholder{opacity:0.5; color:#8d8d8d !Important}
-	
+
 	@media only screen and (max-width:999px) {
-		
+
 	}
 	@media only screen and (max-width:680px) {
-		
+
 	}
 	@media only screen and (max-width:480px) {
-	
+
 	}
-	
+
 .chk-select{position:relative; box-sizing:border-box;display:inline-block; vertical-align:top}
 .chk-select:after{background:url(/images/Sub/select-arrow.png) no-repeat center center; background-size:12px auto; position:absolute; width:20px; height:20px; margin-top:-10px; position:absolute; right:8px; top:50%; display:block; content:""; z-index:3; opacity:0.9}
 .chk-select select{font-size:16px; border:1px solid #e1e1e1; width:100%; height:39px; color:#666; box-sizing:border-box; padding:0 30px 0 7px; -webkit-appearance:none; -moz-appearance:none;background:none; appearance:none;width:100%; margin:0; letter-spacing:-0.67px; position:relative; z-index:5; cursor:pointer;}
 .chk-select select::-ms-expand{display:none;}
 .chk-select.active select{color:#1f1f1f;}
 	@media only screen and (max-width:999px) {
-		
+
 	}
 	@media only screen and (max-width:680px) {
-		
+
 	}
 	@media only screen and (max-width:480px) {
-	
+
 	}
 
 .chk-radio{display:inline-block; font-size:0px; vertical-align:middle; line-height:100%; color:#000;}
@@ -116,15 +124,15 @@ i, em{font-style:normal}
 .chk-radio input[type="radio"]:checked + label{color:#fff;}
 .chk-radio input[type="radio"]:checked + label:before{background:url(/images/Sub/radio-on.png) no-repeat center #9ecd14; background-size:50% auto;}
 	@media only screen and (max-width:999px) {
-		
+
 	}
 	@media only screen and (max-width:680px) {
-		
+
 	}
 	@media only screen and (max-width:480px) {
-	
+
 	}
-	
+
 .chk-check{display:inline-block; font-size:0px; vertical-align:middle; line-height:100%; color:#000;}
 .chk-check input[type="checkbox"]{position: absolute; width:1px; height: 1px; padding: 0; margin:-1px; overflow: hidden; clip:rect(0,0,0,0); border: 0; }
 .chk-check input[type="checkbox"] + label{display:block; position:relative; padding-left:36px; font-size:16px; line-height:1.2em; min-height:28px; box-sizing:border-box; padding-top:4px; color:#fff; font-weight:400; letter-spacing:-0.67px; cursor:pointer;}
@@ -132,13 +140,13 @@ i, em{font-style:normal}
 .chk-check input[type="checkbox"]:checked + label{color:#fff;}
 .chk-check input[type="checkbox"]:checked + label:before{background:url(/images/Sub/check-on.png) no-repeat center #9ecd14;background-size:60% auto;}
 	@media only screen and (max-width:999px) {
-		
+
 	}
 	@media only screen and (max-width:680px) {
-		
+
 	}
 	@media only screen and (max-width:480px) {
-	
+
 	}
 
 
@@ -179,11 +187,11 @@ i, em{font-style:normal}
 		.tbl-type01 .state.being:before{background:#909090;}
 	}
 	@media only screen and (max-width:680px) {
-		
-		
+
+
 	}
 	@media only screen and (max-width:480px) {
-		
+
 	}
 
 
@@ -204,7 +212,7 @@ i, em{font-style:normal}
 .paging-wrap a.next{background:url(/images/Sub/page-next.png) no-repeat center center;  background-size:8px auto;}
 	@media only screen and (max-width:999px) {
 		.paging-wrap{margin-top:45px;}
-		.paging-wrap ul{padding:0 12px;} 
+		.paging-wrap ul{padding:0 12px;}
 		.paging-wrap li{margin:0 4px;}
 		.paging-wrap li a{min-width:15px; font-size:14px;}
 	}

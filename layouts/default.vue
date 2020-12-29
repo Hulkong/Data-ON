@@ -127,8 +127,9 @@ export default {
         that.docW = $("#doc").outerWidth();
       }, 10);
     },
-    onScroll: function(evnet) {
-      this.pageY = evnet.path[1].pageYOffset;
+    onScroll: function(event) {
+      this.pageY = document.documentElement.scrollTop;
+      // this.pageY = event.path[1].pageYOffset;
     },
     /**
      * 검은 배경 클릭시 닫기

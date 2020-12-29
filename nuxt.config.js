@@ -60,14 +60,14 @@ export default {
    ** Global CSS
    */
   css: [
+    'element-ui/lib/theme-chalk/index.css',
     '~/assets/css/common.css',
     '~/assets/css/styleDefault.css',
     '~/assets/css/layout.css',
     '~/assets/css/js/animate.css',
     '~/assets/css/js/owl.carousel.min.css',
     '~/assets/css/js/slick.css',
-    '~/assets/css/js/slick-theme.css',
-    'element-ui/lib/theme-chalk/index.css',
+    '~/assets/css/js/slick-theme.css'
   ],
   /*
    ** Plugins to load before mounting the App
@@ -113,10 +113,8 @@ export default {
     },
     '~/plugins/js/datacheck.js',
     '~/plugins/js/element-ui',
-    {
-      src: '~/plugins/js/ckeditor4-vue.js',
-      mode: 'client'
-    }
+    { src: '@/plugins/js/vue-mavon-editor', ssr: false },
+    '~/plugins/js/axios.js'
   ],
   /*
    ** Auto import components

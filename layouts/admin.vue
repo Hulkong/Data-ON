@@ -30,9 +30,9 @@
 </script>
 
 <style scoped src="../assets/css/admin.css" ></style>
+
 <style scoped>
-#admin-container {
-  min-height: 100px;
-  min-width: 200px;
+.el-main {
+  min-width: 1034px;
 }
 </style>

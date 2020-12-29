@@ -23,7 +23,7 @@
             <el-option label="최근접속일" value="6" />
           </el-select>
 
-          <el-input v-show="!dateSelectList.includes(select1)" class="w70p" maxlength="10" v-model="input1" size="small" />
+          <el-input v-show="!dateSelectList.includes(select1)" class="w70p" maxlength="200" v-model="input1" size="small" />
           <el-date-picker v-show="dateSelectList.includes(select1)" class="w70p" type="date" v-model="input1" size="small" />
         </el-col>
       </el-row>
@@ -101,19 +101,19 @@
     <el-row class="mg20t">
       <el-col>
         <el-table :data="tableData">
-          <el-table-column label="번호" width="126" align="center">
+          <el-table-column label="번호" width="63" align="center">
             <template slot-scope="scope">{{ scope.row.data1 }}</template>
           </el-table-column>
 
-          <el-table-column label="가입구분" width="138" align="center">
+          <el-table-column label="가입구분" width="79" align="center">
             <template slot-scope="scope">{{ scope.row.data2 }}</template>
           </el-table-column>
 
-          <el-table-column label="아이디" width="138" align="center">
+          <el-table-column label="아이디" width="128" align="center">
             <template slot-scope="scope">{{ scope.row.data3 }}</template>
           </el-table-column>
 
-          <el-table-column label="이름" width="126" align="center">
+          <el-table-column label="이름" width="96" align="center">
             <template slot-scope="scope">{{ scope.row.data4 }}</template>
           </el-table-column>
 
@@ -121,19 +121,19 @@
             <template slot-scope="scope">{{ scope.row.data5 }}</template>
           </el-table-column>
 
-          <el-table-column label="연락처" width="138" align="center">
+          <el-table-column label="연락처" width="118" align="center">
             <template slot-scope="scope">{{ scope.row.data6 }}</template>
           </el-table-column>
 
-          <el-table-column prop="reg_date" label="가입일" width="138" align="center">
+          <el-table-column prop="reg_date" label="가입일" width="118" align="center">
             <template slot-scope="scope">{{ $dateFormat(scope.row.data7, '-') }}</template>
           </el-table-column>
 
-          <el-table-column prop="reg_date" label="최근접속일" width="138" align="center">
+          <el-table-column prop="reg_date" label="최근접속일" width="118" align="center">
             <template slot-scope="scope">{{ $dateFormat(scope.row.data8, '-') }}</template>
           </el-table-column>
 
-          <el-table-column label="상태" width="138" align="center">
+          <el-table-column label="상태" width="69" align="center">
             <template slot-scope="scope">{{ scope.row.data9 }}</template>
           </el-table-column>
         </el-table>

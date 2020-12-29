@@ -13,7 +13,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-input maxlength="10" v-model="params.name" id="name" size="small" />
+          <el-input maxlength="20" v-model="params.name" id="name" size="small" />
         </el-col>
 
         <el-col :span="4" class="header-col">
@@ -21,7 +21,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-input maxlength="10" v-model="params.email" id="email" size="small" />
+          <el-input maxlength="128" v-model="params.email" id="email" size="small" />
         </el-col>
       </el-row>
 
@@ -33,8 +33,8 @@
         <el-col :span="8">
           <el-select v-model="params.is_answer" id="is_answer" size="small" class="w100p">
             <el-option label="-- 전체 --" value="" />
-            <el-option label="답변대기" value="False" />
-            <el-option label="답변완료" value="True" />
+            <el-option label="대기" value="False" />
+            <el-option label="완료" value="True" />
           </el-select>
         </el-col>
 
@@ -46,8 +46,8 @@
           <el-select v-model="params.type" id="type" size="small" class="w100p">
             <el-option label="-- 전체 --" value="" />
             <el-option label="오류신고" value="0" />
-            <el-option label="데이터문의" value="1" />
-            <el-option label="기능개선" value="2" />
+            <el-option label="기능개선" value="1" />
+            <el-option label="데이터문의" value="2" />
           </el-select>
         </el-col>
       </el-row>
@@ -58,7 +58,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-input maxlength="10" v-model="params.content" id="content" size="small" />
+          <el-input maxlength="200" v-model="params.content" id="content" size="small" />
         </el-col>
 
         <el-col :span="4" class="header-col">
@@ -85,22 +85,22 @@
     <el-row class="mg20t">
       <el-col>
         <el-table :data="getData(stateId)">
-          <el-table-column label="답변상태" width="138" align="center">
+          <el-table-column label="답변상태" width="96" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.is_answer" class="ntxt">완료</span>
               <span v-else class="ntxt2">대기</span>
             </template>
           </el-table-column>
 
-          <el-table-column prop="hit" label="의견유형" width="138" align="center">
+          <el-table-column prop="hit" label="의견유형" width="79" align="center">
             <template slot-scope="scope">{{ $setComma(scope.row.type) }}</template>
           </el-table-column>
 
-          <el-table-column label="번호" width="126" align="center">
+          <el-table-column label="번호" width="63" align="center">
             <template slot-scope="scope">{{ scope.row.id }}</template>
           </el-table-column>
 
-          <el-table-column label="이름" width="138" align="center">
+          <el-table-column label="이름" width="118" align="center">
             <template slot-scope="scope">
               <nuxt-link :to="{ path: '/admin/ntcBrd/usrCmn/'+scope.row.id, query: posts.param }">
                 {{ $cutText(scope.row.name, '...', 40) }}
@@ -112,7 +112,7 @@
             <template slot-scope="scope">{{ scope.row.email }}</template>
           </el-table-column>
 
-          <el-table-column prop="reg_date" label="등록일" width="138" align="center">
+          <el-table-column prop="reg_date" label="등록일" width="118" align="center">
             <template slot-scope="scope">{{ $dateFormat(scope.row.reg_date, '-') }}</template>
           </el-table-column>
         </el-table>
@@ -157,8 +157,13 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.params) {
-      this.params = this.$route.query.params
+    // querystring key loop
+    for (const param of Object.entries(this.$route.query)) {
+      // params 내 값 확인
+      if (param[0] in this.params) {
+        // value 할당
+        this.params[param[0]] = param[1]
+      }
     }
 
     // 공지사항 리스트 가져오기

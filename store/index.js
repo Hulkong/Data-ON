@@ -1,4 +1,3 @@
-import axios from 'axios';
 export const strict = false;
 
 const cookieparser = process.server ? require('cookieparser') : undefined
@@ -15,6 +14,8 @@ export const mutations = { };
 /* ** ACTIONS (비동기처리) */
 export const actions = {
     setData({ commit }, posts) {
+      const axios = this.$axios
+
         return new Promise( function(resolve, reject){
             axios
             .get(posts.url,{
@@ -41,6 +42,8 @@ export const actions = {
 
     },
     setPost({ commit }, posts) {
+      const axios = this.$axios
+
         return new Promise( function(resolve, reject){
             axios
             .post(
@@ -62,6 +65,34 @@ export const actions = {
         })
 
     },
+  setPatch({ commit }, posts) {
+    const axios = this.$axios
+
+    return new Promise( function(resolve, reject){
+      axios
+        .patch(
+          posts.url,
+          posts.param,
+          posts.config
+        )
+        .then(res => {
+          resolve(res)
+        })
+        .catch(e => {
+          console.log(e)
+
+          if (!e.response || !e.response.status) {
+            return
+          }
+
+          reject(({ statusCode: e.response.status, message: '' }))
+        })
+    }).catch(e => {
+      console.log(e)
+
+      return []
+    })
+  },
   nuxtServerInit({ commit }, { req }) {
     let auth = null
 

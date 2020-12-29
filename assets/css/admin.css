@@ -30,18 +30,14 @@
 
 /* admin */
 #admin-container {
-  min-height: 1000px;
-  min-width: 1631px;
+  min-width: 789px;
+  min-height: 789px;
 }
 #admin-container >>> .el-header {
   background: url(/images/Layout/header-bg.jpg) no-repeat #0075c1;
 }
 #admin-container >>> .el-footer {
   padding: 0;
-}
-#admin-container >>> .home-text {
-  padding-top: 300px;
-  text-align: center;
 }
 #admin-container >>> .el-radio-button .el-radio-button__inner {
   border-radius: 0;
@@ -55,7 +51,7 @@
   margin-left: 0;
   border: 0;
   border-radius: 0;
-  min-width: 100px;
+  max-height: 38px;
   background: url(/images/Sub/btn-bg.png) no-repeat 50%;
   color: #FFF;
 }
@@ -142,4 +138,7 @@
   color: #333;
   line-height: 304px;
   text-align: center;
+}
+#admin-container >>> .text-col {
+  line-height: 32px;
 }

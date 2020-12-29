@@ -14,7 +14,7 @@
           <el-radio-button label="3">내용</el-radio-button>
         </el-radio-group>
 
-        <el-input class="w363" placeholder="검색어를 입력하세요" maxlength="10" v-model="keyword" />
+        <el-input class="w363" placeholder="검색어를 입력하세요." maxlength="200" v-model="keyword" />
         <el-button @click="goSearch">검색</el-button>
       </el-col>
     </el-row>
@@ -32,7 +32,7 @@
     <el-row class="mg20t">
       <el-col>
         <el-table :data="getNoticeOneList(name)">
-          <el-table-column label="No." width="126" align="center">
+          <el-table-column label="번호" width="96" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.notice_yn" class="ntxt">공지</span>
               <span v-else>{{ scope.row.id }}</span>
@@ -47,11 +47,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="reg_date" label="등록일" width="138" align="center">
+          <el-table-column prop="reg_date" label="등록일" width="118" align="center">
             <template slot-scope="scope">{{ $dateFormat(scope.row.reg_date, '-') }}</template>
           </el-table-column>
 
-          <el-table-column prop="hit" label="조회수" width="138" align="center">
+          <el-table-column prop="hit" label="조회수" width="69" align="center">
             <template slot-scope="scope">{{ $setComma(scope.row.hit) }}</template>
           </el-table-column>
         </el-table>
@@ -123,26 +123,30 @@ export default {
     goSearch() {
       const that = this
 
-      // 키워드 저장
-      this.setKeyword({
-        name: that.name,
-        keyword: that.keyword
-      })
+      if (that.keyword) {
+        // 키워드 저장
+        this.setKeyword({
+          name: that.name,
+          keyword: that.keyword
+        })
 
-      // 검색 조건 저장
-      this.setSearchCondition({
-        name: that.name,
-        searchCondition: that.searchCondition
-      })
+        // 검색 조건 저장
+        this.setSearchCondition({
+          name: that.name,
+          searchCondition: that.searchCondition
+        })
 
-      // 검색 조건 저장
-      this.setPage({
-        name: that.name,
-        page: 1
-      })
+        // 검색 조건 저장
+        this.setPage({
+          name: that.name,
+          page: 1
+        })
 
-      // 검색 조건으로 리스트 다시가져오기
-      this.fetchData()
+        // 검색 조건으로 리스트 다시가져오기
+        this.fetchData()
+      } else {
+        this.$alert('검색어를 입력하세요.')
+      }
     }
   }
 }

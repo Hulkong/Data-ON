@@ -110,7 +110,10 @@ export default {
          * markdown to html 변환
          */
         chngHtml: function(text){
-            return this.$markToHtml(text);
+            if(text)
+                return this.$markToHtml(text);
+            else 
+                return "";
         },
         downCallback: function(file){
             // 구글 애널리틱스 추가
