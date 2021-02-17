@@ -7,5 +7,9 @@ WORKDIR $HOME
 
 COPY package.json .
 
+ARG NODE_ENV
+
+RUN env
+
 RUN npm install
 RUN npm cache verify

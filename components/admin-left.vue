@@ -27,8 +27,7 @@
           </NuxtLink>
         </el-submenu>
 
-        <!--        TODO: 2차 반영 주석-->
-<!--        <el-submenu index="3">
+        <el-submenu index="3">
           <template slot="title">
             <span>설정</span>
           </template>
@@ -40,7 +39,7 @@
           <NuxtLink to="/admin/set/ntfRcp">
             <el-menu-item index="3-2">알림 수신자</el-menu-item>
           </NuxtLink>
-        </el-submenu>-->
+        </el-submenu>
       </el-menu>
     </el-col>
   </el-row>
@@ -50,10 +49,10 @@
 export default {
   methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath)
+
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath)
+
     }
   }
 }

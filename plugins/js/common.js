@@ -1,5 +1,4 @@
 import Vue from 'vue'
-
 /**
  * 입력된 문장을 정해진 부분만큼 자르기
  * @param {*} text 자를 문장
@@ -245,9 +244,11 @@ Vue.prototype.$downloadFile = (files, callback) => {
                 item => downlowdType.indexOf(item.file_ext) > -1
             ).map(
                 file => { 
-                    downFile(file.origin_nm, file.file_path)
-                    // 다운로드 수 ++
-                    if(callback) callback(file);
+                    if(file.dt_download_yn){
+                        downFile(file.origin_nm, file.file_path)
+                        //다운로드 수 ++
+                        if(callback) callback(file);
+                    }
                 }
             );
         }else if (typeof files == 'object'){
@@ -319,11 +320,11 @@ Vue.prototype.$validateLen = (keyword, min, max) => {
     // 검색어 최소 2자에서 최대 50자까지
     if(keyword && keyword.length < min){
         result.status = false;
-        result.message = "검색어를 2자 이상 입력해주세요.";
+        result.message = "검색어를 "+min+"자 이상 입력해주세요.";
     } 
     if(keyword && keyword.length > max){
         result.status = false;
-        result.message = "검색어를 50자 이하로 입력해주세요.";
+        result.message = "검색어를 "+max+"자 이하로 입력해주세요.";
     }
     
     return result;
@@ -336,14 +337,12 @@ Vue.prototype.$validateLen = (keyword, min, max) => {
 Vue.prototype.$makeParam = (item) => {
     Object.keys(item).map((key)=>{
         if(key.indexOf('dt_') == 0){
-            if(item[key].length > 0){ 
-                item[key] = item[key].join(',');
-                // item[key] = item[key].map(
-                //     obj => obj.id
-                // ).join(',');
+            if(item[key].length > 0 && typeof item[key] != 'string'){ 
+                item[key] = item[key].map(obj => obj).join(',');
             }
         }
     });
+
     return item;
 }
 
@@ -413,7 +412,7 @@ Vue.prototype.$markToHtml = (text) => {
         smartLists: true,
         smartypants: false
     });
-    if( typeof html !== 'undefined' && html !== null) html = marked(html);
+    if( typeof html !== 'undefined' && html !== null && html) html = marked(html);
     
     return html;
 }

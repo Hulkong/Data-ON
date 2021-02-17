@@ -19,7 +19,9 @@
             v-model="name.value"
             :maxlength="10"
           />
-          <p class="errorMsg" v-show="name.error.isError">{{ name.error.msg }}</p>
+          <p class="errorMsg" v-show="name.error.isError">
+            {{ name.error.msg }}
+          </p>
         </div>
         <!-- name -->
 
@@ -33,7 +35,9 @@
             v-model="email.value"
             :maxlength="50"
           />
-          <p class="errorMsg" v-show="email.error.isError">{{ email.error.msg }}</p>
+          <p class="errorMsg" v-show="email.error.isError">
+            {{ email.error.msg }}
+          </p>
         </div>
         <!-- email -->
 
@@ -41,9 +45,9 @@
         <div class="subbox selectbox">
           <label for="select-opinion" class="hd">의견 유형</label>
           <select v-model="selectbox.value" id="select-opinion">
+            <option value="2">데이터 요청</option>
             <option value="0">오류신고</option>
             <option value="1">기능개선</option>
-            <option value="2">데이터 문의</option>
           </select>
         </div>
         <!-- selectbox -->
@@ -58,9 +62,13 @@
             v-model="textarea.value"
             :maxlength="500"
           />
-          <p class="errorMsg" v-show="textarea.error.isError">{{ textarea.error.msg }}</p>
+          <p class="errorMsg" v-show="textarea.error.isError">
+            {{ textarea.error.msg }}
+          </p>
           <p class="checkNumber">
-            <span :class="{limit: textarea.limit}">{{ textarea.value.length }}</span>
+            <span :class="{ limit: textarea.limit }">{{
+              textarea.value.length
+            }}</span>
             <span>/</span>
             <strong>500</strong>
           </p>
@@ -70,7 +78,10 @@
         <!-- captchar -->
         <div class="subbox captchar">
           <div class="captchar_contents">
-            <google-rcaptchar @verify="googleVerify" @error="googleNotVerify"></google-rcaptchar>
+            <google-rcaptchar
+              @verify="googleVerify"
+              @error="googleNotVerify"
+            ></google-rcaptchar>
           </div>
         </div>
         <!-- captchar -->
@@ -82,9 +93,7 @@
           <span>개인정보 수집 및 이용 동의(필수)</span>
           <span class="detail" @click="goInform">[자세히보기]</span>
           <span class="errorMsg" v-show="checkbox.error.isError">
-            {{
-            checkbox.error.msg
-            }}
+            {{ checkbox.error.msg }}
           </span>
         </div>
         <!-- checkbox -->
@@ -106,7 +115,9 @@
         <span>닫기</span>
       </div>
     </div>
-    <p class="errorMsg server" v-show="server.error.isError">{{ server.error.msg }}</p>
+    <p class="errorMsg server" v-show="server.error.isError">
+      {{ server.error.msg }}
+    </p>
   </div>
 </template>
 
@@ -115,8 +126,8 @@ export default {
   props: {
     isShow: {
       default: false,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     title: "의견 남기기",
@@ -127,73 +138,73 @@ export default {
       value: null,
       error: {
         isError: false,
-        msg: "10자이내로 작성해주세요"
-      }
+        msg: "10자이내로 작성해주세요",
+      },
     },
     email: {
       value: null,
       error: {
         isError: false,
-        msg: "이메일 형식에 맞지 않습니다"
-      }
+        msg: "이메일 형식에 맞지 않습니다",
+      },
     },
     selectbox: {
-      value: 0,
+      value: 2,
       error: {
         isError: false,
-        msg: ""
-      }
+        msg: "",
+      },
     },
     checkbox: {
       value: false,
       error: {
         isError: false,
-        msg: "필수항목입니다"
-      }
+        msg: "필수항목입니다",
+      },
     },
     textarea: {
       value: "",
       error: {
         isError: false,
-        msg: "필수항목입니다"
+        msg: "필수항목입니다",
       },
-      limit: false
+      limit: false,
     },
     server: {
       value: null,
       error: {
         isError: false,
-        msg: "서버와 연결이 끊어졌습니다. 다시 시도해주세요."
-      }
-    }
+        msg: "서버와 연결이 끊어졌습니다. 다시 시도해주세요.",
+      },
+    },
   }),
 
   watch: {
-    "name.value": _.debounce(function() {
+    "name.value": _.debounce(function () {
       if (!this.isShow) return;
 
       if (this.validTarget(this.name, "이름을 입력해주세요"))
         this.validName(this.name);
     }, 600),
 
-    "email.value": _.debounce(function() {
+    "email.value": _.debounce(function () {
       if (!this.isShow) return;
 
       if (this.validTarget(this.email, "이메일을 입력해주세요"))
         this.validEmail(this.email);
     }, 600),
 
-    "textarea.value": _.debounce(function() {
+    "textarea.value": _.debounce(function () {
       if (!this.isShow) return;
 
       if (this.validTarget(this.textarea)) this.validateTextarea(this.textarea);
-    }, 600)
+    }, 600),
   },
 
   computed: {
     changeTitle() {
       return this.isShowSecond ? "접수 완료" : "의견 남기기";
-    }
+    },
   },
 
   methods: {
@@ -227,7 +238,7 @@ export default {
     init() {
       this.name.value = null;
       this.email.value = null;
-      this.selectbox.value = 0;
+      this.selectbox.value = 2;
       this.textarea.value = "";
       this.checkbox.value = false;
       this.isAllPass = false;
@@ -250,11 +261,11 @@ export default {
 
     /**
      * @description verify in google rcaptchar
-     * @param {String} data: return value
+     * @param {String} error: return value
      */
     googleNotVerify(error) {
       console.log(error);
-      if (data)
+      if (error)
         this.setErrorMsg(
           this.server,
           "구글인증 서버와 연결이 끊어졌습니다. 다시 시도해주세요."
@@ -363,8 +374,8 @@ export default {
       return new Promise((resolve, reject) => {
         axios
           .post("/api/inquires/", params)
-          .then(response => resolve(response.data))
-          .catch(error => reject(error));
+          .then((response) => resolve(response.data))
+          .catch((error) => reject(error));
       });
     },
 
@@ -393,10 +404,10 @@ export default {
         name: this.name.value,
         email: this.email.value,
         type: this.selectbox.value,
-        content: this.textarea.value
+        content: this.textarea.value,
       })
         .then(() => (this.isShowSecond = true))
-        .catch(err => {
+        .catch((err) => {
           this.setErrorMsg(this.server, this.server.error.msg);
           this.isShowSecond = false;
         });
@@ -409,7 +420,7 @@ export default {
       grecaptcha.reset(0);
       this.init();
       this.$emit("close");
-    }
+    },
   },
 
   beforeCreate() {},
@@ -417,7 +428,7 @@ export default {
   beforeMount() {},
   mounted() {},
   beforeDestroy() {},
-  destroyed() {}
+  destroyed() {},
 };
 </script>
 
@@ -449,7 +460,7 @@ export default {
 }
 .font-s-s {
   font: normal normal normal 0.875rem/1.125rem Noto Sans CJK KR;
-} 
+}
 .font-xs {
   font: normal normal normal 0.75rem/1.125rem Noto Sans CJK KR;
 }

@@ -3,7 +3,7 @@
         <h4>인기 검색어</h4>
         <!-- <div class="like-slide" > -->
         <div class="like-slide" v-if="listCount > 0">
-            <div class="item" v-for="(item, index) in getResultKeyword" :key="index">
+			<div class="item" v-for="(item, index) in getResultKeyword" :key="index">
 				<!-- <a href="#none" @click="goSearch(item.search_word)"> -->
 				<nuxt-link :to="'/search?keyword='+ item.search_word">
 					<span>{{index+1}}. {{$cutText(item.search_word,'...',6,0)}}</span>

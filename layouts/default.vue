@@ -2,34 +2,49 @@
   <div>
     <div
       id="doc"
-      :class="[{'main': main_class},
-                   {'sub': !main_class}, 
-                   {'board': board_class}]"
+      :class="[
+        { main: main_class },
+        { sub: !main_class },
+        { board: board_class },
+      ]"
     >
       <!-- main / sub -->
       <!-- s : #header-wrap //-->
-      <include-header :keyword="keyword" v-if="!main_class || (main_class && msec01H <= pageY)"></include-header>
+      <include-header
+        :keyword="keyword"
+        v-if="!main_class || (main_class && msec01H <= pageY)"
+      ></include-header>
       <!-- e : #header-wrap //-->
       <!-- s: fog1 -->
-      <div class="header-slider-ovclick" v-show="headerFog" @click="closeFog('pop')" ></div>
+      <div
+        class="header-slider-ovclick"
+        v-show="headerFog"
+        @click="closeFog('pop')"
+      ></div>
       <!-- e: fog1 -->
       <!-- s : #container-wrap //-->
 
       <div
         id="container-wrap"
-        :class="[{'mcontainer': main_class}, 
-                    {'scontainer': !main_class}, 
-                    {'div-cont': !main_class}, 
-                    {'full': board_class}]"
+        :class="[
+          { mcontainer: main_class },
+          { scontainer: !main_class },
+          { 'div-cont': !main_class },
+          { full: board_class },
+        ]"
       >
         <loading-data :loading="getLoading"></loading-data>
         <!-- s: fog2 -->
-        <div class="content-slider-ovclick" v-if="bodyFog" @click="closeFog('')" />
+        <div
+          class="content-slider-ovclick"
+          v-if="bodyFog"
+          @click="closeFog('')"
+        />
         <!-- e: fog2 -->
         <!-- s: snb-wrap-->
         <include-filter v-if="search_class"></include-filter>
         <!-- e: snb-wrap-->
-        <Nuxt :nuxtChildKey="routerViewKey" />
+        <Nuxt :nuxtChildKey="routerViewKey" :key="$route.fullPath" />
         <div class="__bottom-buttons">
           <contact :isShow="isShowContact" @close="closeContact"></contact>
           <div class="contact-button" @click="isShowContact = true"></div>
@@ -37,7 +52,7 @@
             href="javascript:void(0);"
             @click="$scrollToTop"
             class="top-btn over"
-            v-show="(msec01H <= pageY)"
+            v-show="0 < pageY"
           >
             <span class="blind">top</span>
           </a>
@@ -46,7 +61,9 @@
       <popup-preview v-if="getPreviewOn"></popup-preview>
       <popup-allfilter v-if="getAllFilterOn"></popup-allfilter>
       <!-- s : layer-wrap selBox -->
-      <include-sel-box v-show="search_class && getMobileOrderBoxOn"></include-sel-box>
+      <include-sel-box
+        v-show="search_class && getMobileOrderBoxOn"
+      ></include-sel-box>
       <!-- e : layer-wrap selBox -->
       <!-- e : #container-wrap //-->
       <!-- s : #footer-wrap //-->
@@ -59,7 +76,7 @@
 <script>
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 export default {
-  data: function() {
+  data: function () {
     return {
       isShowContact: false,
       main_class: true,
@@ -70,7 +87,7 @@ export default {
       headerFog: false, // 팝업 검은 배경
       docW: 0, // 화면 widht 사이즈
       msec01H: 0, // 첫번째 페이지의 높이
-      pageY: 0 // 현재 보고있는 높이
+      pageY: 0, // 현재 보고있는 높이
     };
   },
   computed: {
@@ -78,18 +95,18 @@ export default {
       "getMobileOrderBoxOn", // [모바일] 필터 on/off
       "getPreviewOn", // preview popup on/off
       "getAllFilterOn", // allfilter popup on/off
-      "getLoading" // 로딩 on/off 가져오기
+      "getLoading", // 로딩 on/off 가져오기
     ]),
     routerViewKey() {
       this.setStyles(this.$route.matched[0].path);
-    }
+    },
   },
   mounted() {
     var that = this;
     this.msec01H = $(".msec-01").outerHeight();
 
     // 화면 사이즈 조절 & 스크롤 높이 측정
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       this.onResize();
       window.addEventListener("load", this.onResize);
       window.addEventListener("resize", this.onResize);
@@ -119,22 +136,22 @@ export default {
       "setPreview", // 미리보기 화면  on/off
       "setMobileOrderBoxOn", // 검색 파라미터 추가
       "setAllFilter", // 필터 전체 검색
-      "setMobileFilterOn" // 모바일 필터 창
+      "setMobileFilterOn", // 모바일 필터 창
     ]),
-    onResize: function(event) {
+    onResize: function (event) {
       var that = this;
-      setTimeout(function() {
+      setTimeout(function () {
         that.docW = $("#doc").outerWidth();
       }, 10);
     },
-    onScroll: function(event) {
+    onScroll: function (event) {
       this.pageY = document.documentElement.scrollTop;
       // this.pageY = event.path[1].pageYOffset;
     },
     /**
      * 검은 배경 클릭시 닫기
      */
-    closeFog: function(type) {
+    closeFog: function (type) {
       if (type == "pop") {
         // 정렬
         this.setMobileOrderBoxOn(false);
@@ -151,7 +168,7 @@ export default {
     /**
      * 화면별 스타일 적용
      */
-    setStyles: function(path) {
+    setStyles: function (path) {
       if (path == "/" || path == "") {
         this.main_class = true;
         this.search_class = false;
@@ -175,8 +192,8 @@ export default {
      */
     closeContact() {
       this.isShowContact = false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -191,7 +208,8 @@ export default {
   justify-content: space-around;
   bottom: 20px;
   right: 0;
-  padding-right: 23px;
+  /* padding-right: 23px; */
+  margin-right: 23px;
   position: fixed;
   z-index: 2299;
 }

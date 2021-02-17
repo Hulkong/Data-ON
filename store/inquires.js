@@ -4,8 +4,8 @@ export const state = () => ({
   list: {
     url: '/api/inquires/',
     param: {
-      page : 1, // 현재 페이지
-      page_size : 10, // 현재 페이지 - 리스트 수
+      page: 1, // 현재 페이지
+      page_size: 10, // 현재 페이지 - 리스트 수
       page_list_size: 5 // 한페이지에 보여지는 페이지 리스트의 수
     },
     result: []
@@ -43,12 +43,22 @@ export const getters = {
     return result
   },
   getData: (state) => (id) => {
+    const totalCount = state[id].result.count,
+      cpage = state[id].param.page,
+      listsize = state[id].param.page_size
+
     let dataResult = null
 
     if (state[id].result) {
       if (id === 'list') {
         if (state[id].result.results) {
-          dataResult =  state[id].result.results.list
+          dataResult = state[id].result.results.list
+
+          dataResult.map((obj, index) => {
+            obj.num = totalCount - ((cpage-1)*listsize) - index;
+
+            return obj
+          })
         }
       } else {
         return state[id].result
@@ -67,12 +77,6 @@ export const mutations = {
   },
   addDetail: (state, result) => {
     if (result) {
-      const data = result.data
-
-      if (data.content) {
-        data.content = Vue.prototype.$markToHtml(data.content)
-      }
-
       state['detail'].result = result.data
     }
   },
@@ -82,7 +86,8 @@ export const mutations = {
     setState.param = { ...setState.param, ...obj.param }
   },
   setPage: (state, obj) => {
-    state[obj.name].param.page = obj.page
+    state[obj.name].param.page = obj.page;
+    obj.out = "succeed";
   }
 }
 

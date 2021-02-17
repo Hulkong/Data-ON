@@ -14,7 +14,10 @@
           <el-radio-button label="3">내용</el-radio-button>
         </el-radio-group>
 
-        <el-input class="w363" placeholder="검색어를 입력하세요." maxlength="200" v-model="keyword" />
+        <div class="w363 el-input">
+          <input class="el-input__inner" placeholder="검색어를 입력하세요." maxlength="200" v-model="keyword" @keypress.enter="goSearch" />
+        </div>
+
         <el-button @click="goSearch">검색</el-button>
       </el-col>
     </el-row>
@@ -23,7 +26,7 @@
       <el-col :span="12" class="pad20t">전체 <span class="data-length-span">{{ getCount(name) ? $setComma(getCount(name)) : 0 }}</span>건</el-col>
 
       <el-col :span="12" class="tr">
-        <NuxtLink to="/admin/ntcBrd/ntc/wrt">
+        <NuxtLink :to="{ path: '/admin/ntcBrd/ntc/wrt', query: posts.param }">
           <el-button class="white-el-button"><i class="el-icon-edit" /> 글쓰기</el-button>
         </NuxtLink>
       </el-col>
@@ -35,7 +38,7 @@
           <el-table-column label="번호" width="96" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.notice_yn" class="ntxt">공지</span>
-              <span v-else>{{ scope.row.id }}</span>
+              <span v-else>{{ scope.row.num }}</span>
             </template>
           </el-table-column>
 
@@ -90,12 +93,32 @@ export default {
     }
   },
   mounted() {
+    const page = this.$route.query.page ? this.$route.query.page : 1
+
     // param에 키워드 있으면 적용
     this.keyword = this.$route.query.keyword
 
+    // 키워드 저장
+    this.setKeyword({
+      name: this.name,
+      keyword: this.keyword
+    })
+
     if (this.$route.query.searchCondition) {
       this.searchCondition = this.$route.query.searchCondition
+
+      // 검색 조건 저장
+      this.setSearchCondition({
+        name: this.name,
+        searchCondition: this.searchCondition
+      })
     }
+
+    // 검색 조건 저장
+    this.setPage({
+      name: this.name,
+      page: page
+    })
 
     // 공지사항 리스트 가져오기
     this.fetchData()

@@ -7,16 +7,16 @@
 				<!-- <h3 class="mtit">공지사항</h3> -->
 				<div class="top-search">
 					<p class="chk-input">
-						<input type="text" 
-								placeholder="데이터를 검색해보세요" 
-								v-model="searchWord" 
+						<input type="text"
+								placeholder="데이터를 검색해보세요"
+								v-model="searchWord"
 								@keyup.enter="goSearch"
 								autocomplete="off" />
 						<button class="enter" @click="goSearch"><span class="blind">검색</span></button>
 					</p>
 				</div>
-				<a  href="javascript:void(0);" 
-					class="bt-filter" 
+				<a  href="javascript:void(0);"
+					class="bt-filter"
 					:class="{
 						'active': getMobileFilterOn,
 						'selected': getFilterCnt
@@ -24,7 +24,7 @@
 					@click="filerToggle"
 				>
 					<span class="blind">필터</span>
-				</a> 
+				</a>
 			</div>
 		</div>
 	</header>
@@ -55,8 +55,9 @@ export default {
 	},
 	methods:{
 		...mapMutations("search", [				// 필터 추가, 삭제
-			"setMobileFilterOn",				// [모바일] 필터 on/off
-		]),	
+			"setMobileFilterOn",				// [모바일] 필터 on/off,
+      "allRemoveFilter",
+		]),
 		/**
 		 * 검색
 		 */
@@ -71,10 +72,14 @@ export default {
 				if(this.$route.name == 'index') this.$sendGA(this,'메인 검색_'+device,'검색', this.searchWord);
 				else this.$sendGA(this,'결과내 검색_'+device,'검색', this.searchWord);
 
-				//url에 추가
-				this.$router.push( '/search?keyword='+ this.searchWord );
-				//검색어 등록
-				$nuxt.$emit('search-search', this.searchWord);
+        // 검색 필터 초기화
+        this.allRemoveFilter();
+
+				//검색어 등록 & url에 추가
+				let obj = this.$route.query;
+				let version = 0;
+				if(obj.v) version = Number(obj.v) + 1;
+				this.$router.push( '/search?v='+version+'&page=1&keyword='+ this.searchWord );   //검색시 페이지 초기화
 			}else{
 				alert(valids.message);
 			}

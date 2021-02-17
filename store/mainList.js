@@ -20,7 +20,10 @@ export const state = () => ({
         url: '/api/datalists/wordranks',
         param: {},
         result:[]
-    }
+    },
+    stdrDownloadCnt:{       // 다운로드 수 카운터
+        url: '/api/files/standards/'
+    },
 }); 
 
 export const getters = { 
@@ -56,12 +59,19 @@ export const getters = {
         return list;
     },
     getResultKeyword:(state) => {
-        return state['keyword'].result;
+        if(state['keyword'].result.result){
+            var list = state['keyword'].result.result;
+            if(list && list.length > 3) list = list.slice(0,3);        
+            return list;
+        }else{
+            return [];
+        }
     },
 };
 
 export const mutations = { 
     addList: (state,result) => {
+
         // 데이터 commit
         state[result.storeName].result = result.data; 
         
@@ -73,7 +83,6 @@ export const mutations = {
                 // 기준년월 commit
                  state[result.storeName].stdr_date = stdrDate.substr(0,4)+"년 "+stdrDate.substr(4,2)+"월 기준"; 
             } 
-
         }
             
     }
@@ -81,9 +90,20 @@ export const mutations = {
 
 export const actions = {
     async getData({ commit }, posts) { 
-        await this.dispatch('setData', posts).then((result)=>{
+        var result = await this.dispatch('setData', posts);
+        if(result !== undefined){
             result.storeName = posts.storeName;
             commit('addList', result);
-        });
+        }
+        
+    },
+    /**
+     * 다운로드 수 추가
+     * @param {*} param0 
+     * @param {*} posts 
+     */
+    async addStdrDownCnt({ commit, state }, id) {
+        let url = state.stdrDownloadCnt.url + id;
+        this.dispatch('setData', {'url':url});
     },
 };

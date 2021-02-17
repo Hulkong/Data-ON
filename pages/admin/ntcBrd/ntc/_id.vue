@@ -20,7 +20,7 @@
       </el-row>
 
       <el-row class="mg40t">
-        <editor :model.sync="form.content" />
+        <editor :value.sync="form.content" menu="notice" />
       </el-row>
 
       <el-row class="mg40t">
@@ -41,7 +41,7 @@
             multiple
             :limit="2"
             :on-exceed="handleExceed"
-            :file-list="getDetailAdminResult(name).tbattachFiles">
+            :file-list="!is_wrt ? getDetailAdminResult(name).tbattachFiles : []">
             <el-button id="upload" size="small">업로드</el-button>
           </el-upload>
         </el-col>
@@ -99,11 +99,12 @@ export default {
     const route = this.$route
     const id = route.params.id
 
+    this.listParam = route.query
+
     // 게시판 상세내용 가져오기
     if (id && id !== 'wrt') {
       // 게시판 상세내용 가져오기
       this.fetchData(id)
-      this.listParam = route.query
       this.is_wrt = false
     }
   },
@@ -140,7 +141,8 @@ export default {
       this.$message.warning(`제한은 2 개입니다. 이번에는 ${ files.length } 개의 파일을 선택했습니다.`)
     },
     beforeRemove(file) {
-      return this.$confirm(`${file.origin_nm} 전송을 취소하시겠습니까?`, '취소')
+      console.log(file)
+      return this.$confirm(`${file.name} 전송을 취소하시겠습니까?`, '취소')
     },
     onSubmit: async function() {
       const form = this.form

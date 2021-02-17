@@ -7,7 +7,7 @@
                 <span class="blind">이전 페이지로</span>
         </a>
         <ul>
-            <li v-for=" idx in (pageListCnt) "
+            <li v-for=" idx in pageListCnt "
                 :key=idx
                 :class="{'active':idx + (pListCount * (Math.floor((cpage-1)/pListCount))) == cpage}"
             >
@@ -33,16 +33,16 @@ import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 export default {
     computed: {
         totalCount: function(){ // 각 게시판 list의 총 수
-            return this.$store.getters[this.page_type + '/getCount'](this.page_name);
+            return Number(this.$store.getters[this.page_type + '/getCount'](this.page_name));
         },
         cpage: function(){      // 현재 페이지
-            return this.$store.getters[this.page_type + '/getcPage'](this.page_name);
+            return Number(this.$store.getters[this.page_type + '/getcPage'](this.page_name));
         },
         pListCount: function(){ // 한페이지에 보여지는 페이지 수
-            return this.$store.getters[this.page_type + '/getPageListSize'](this.page_name);
+            return Number(this.$store.getters[this.page_type + '/getPageListSize'](this.page_name));
         },
         listsize: function(){   // 리스트 사이즈
-            return this.$store.getters[this.page_type + '/getListSize'](this.page_name);
+            return Number(this.$store.getters[this.page_type + '/getListSize'](this.page_name));
         },
         pageListCnt: function(){
             // 현재 페이지 리스트의 마지막 페이지까지 포함된 리스트 개수
@@ -56,9 +56,13 @@ export default {
                 // 25페이지까지 안나오면 나올 수 있는 최대 수 계산
                 return Math.ceil((this.totalCount-(thisListCnt-(this.listsize*this.pListCount)))/this.listsize)
             } else {
-                return this.pListCount;
+                return Number(this.pListCount);
             }
-        }
+        },
+        makeParam: function(){
+            var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
+			return this.$makeParam(allParam);
+		},
 	},
     data: function(){
         return {
@@ -71,46 +75,47 @@ export default {
     methods:{
         goPre: function(){
             let current_page = this.pListCount * Math.floor((this.cpage-1-this.pListCount) / this.pListCount) + 1;
+            let obj = {
+                'name': this.page_name,
+                'page': current_page
+            }
 
-            this.$store.commit(this.page_type+'/setPage', {
-              'name': this.page_name,
-              'page': current_page
-            })
+            this.$store.commit(this.page_type+'/setPage', obj)
 
             // 검색
-            if(this.page_type == 'search'){
-                $nuxt.$emit('search-search');
+            if(this.page_type == 'search' && obj.out === 'succeed'){
+                this.$router.push( {path: '/search', query:this.makeParam});
             } else {
                 this.$parent.fetchData();
             }
         },
         goNext: function(){
             let current_page = this.pListCount * Math.floor((this.cpage-1+this.pListCount) / this.pListCount) + 1;
+            let obj = {
+                'name': this.page_name,
+                'page': current_page
+            }
 
-            this.$store.commit(this.page_type+'/setPage', {
-              'name': this.page_name,
-              'page': current_page
-            })
+            this.$store.commit(this.page_type+'/setPage', obj)
 
             // 검색
-            if(this.page_type == 'search'){
-                $nuxt.$emit('search-search');
+            if(this.page_type == 'search' && obj.out === 'succeed'){
+                this.$router.push( {path: '/search', query:this.makeParam});
             } else {
                 this.$parent.fetchData();
             }
         },
         goPage: function(num=1){
 
-            let current_page = num;
-
-            this.$store.commit(this.page_type+'/setPage', {
-              'name': this.page_name,
-              'page': current_page
-            })
+            let obj = {
+                'name': this.page_name,
+                'page': num
+            }
+            this.$store.commit(this.page_type+'/setPage', obj);
 
             // 검색
-            if(this.page_type == 'search'){
-                $nuxt.$emit('search-search');
+            if(this.page_type == 'search' && obj.out === 'succeed'){
+                this.$router.push( {path: '/search', query:this.makeParam});
             } else {
                 this.$parent.fetchData();
             }

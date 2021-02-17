@@ -26,7 +26,7 @@
 				<ul>
 					<!-- s: 데이터 형식 (type) -->
 					<li class="lm_l1" 
-						v-for="(fobj, idx) in filterlist"
+						v-for="(fobj, idx) in getFilterNameList"
 						:key="fobj.id+'_'+idx"
 						:class="{
 							'has-sub': (getMobileFilterOn && getFilterList(fobj.list_id).length > 0), 
@@ -36,7 +36,7 @@
 						<a href="javascript:void(0);" class="lm_a1" @click="openSubMenu(fobj.id)"><span>{{fobj.name}}</span></a>
 						<ul v-if="!getMobileFilterOn && getFilterList(fobj.list_id).length > 0">
 							<li class="lm_l2" 
-								v-for="(item, index) in sortFilterList(fobj.id, fobj.list_id)" 
+								v-for="(item, index) in sortFilterList(fobj.id, fobj.list_id, fobj.more_id)" 
 								:key="index"
 								:class="{'active': getChkSelFilter({'name': fobj.id, 'id': item['dt_'+fobj.id]})}"
 							>
@@ -90,6 +90,7 @@ export default {
 			'getFilterList', 	 	 // 필터 리스트 가져오기
 			'getSelectFilter',		 // 선택한 필터 가져오기
 			'getChkSelFilter',		 // 선택 여부 확인 
+			'getFilterNameList'		 // filter 이름 리스트 가져오기
 		]),
 		makeParam: function(){
 			var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
@@ -100,13 +101,6 @@ export default {
 		return {
 			mobileopen: false,
 			mOpenItem: '',
-			filterlist: [
-				{'id': 'type', 'list_id': 'file_type', 'name': '데이터 형식', 'm_id':'file_type'},
-				{'id': 'col', 'list_id': 'column_list7', 'name':'컬럼명', 'more_id':'column_list', 'm_id':'column_list20'},
-				{'id': 'range', 'list_id': 'range_type', 'name':'공간단위', 'm_id': 'range_type'},
-				{'id': 'category', 'list_id': 'category_type7', 'name':'분야', 'more_id': 'category_type', 'm_id': 'category_type'},
-				{'id': 'organ', 'list_id': 'dt_organ_column7', 'name':'제공기관', 'more_id':'dt_organ_column', 'm_id':'dt_organ_column20'}
-			]
 		}
 	},
 	created(){
@@ -138,36 +132,26 @@ export default {
 		goSearch: function(word){
 			// url에 추가
 			this.$router.push( {path: '/search', query:{ 'keyword' : word }});
-			
 			// this.$router.push( {path: '/search', query:this.$route.query});
-			// 검색
-			$nuxt.$emit('search-search', word);
-		},
-		sortFilterList: function(id, list_id){
-			var allList = this.getFilterList(list_id);
-			var selList = this.getSelectFilter(id);
-			var resultArr = [];
-			// console.log(selList);
-			if(selList && selList.length > 0){
-				resultArr = selList.map(sItem => {
-					let rsltObj = {};
-					rsltObj['dt_'+ id] = sItem.id;
-					rsltObj['dt_'+ id +'_nm'] = sItem.nm;
-					rsltObj['max_count'] = sItem.cnt;
-					return rsltObj;
-				});
-			}
 
+			// 검색
+		},
+		sortFilterList: function(id, list_id, more_id){
+			var allList = _.cloneDeep(this.getFilterList(list_id));		// 초기 필터에 보여줄 list 7개
+			var selList = _.cloneDeep(this.getSelectFilter(id));
+			if(more_id && selList.length > 0) allList = _.cloneDeep(this.getFilterList(more_id));	// 전체보기 팝업에 있는 필터 list 
+			
+			var resultArr = [];
 			if(allList && allList.length > 0){
 				let sortedArr = this.$twoArrSort(allList, 
 												"dt_" + id, 
-												selList, 
-												"id"
+												selList
 												);
-				// console.log(sortedArr);
-				// if(sortedArr.selArr.length > 0) resultArr = sortedArr.selArr;
+				if(sortedArr.selArr.length > 0) resultArr = sortedArr.selArr;
 				resultArr = resultArr.concat(sortedArr.otherArr);
 			}
+			
+			if(more_id && resultArr.length > 7) resultArr = resultArr.slice(0,7);
 			return resultArr;
 		},
 		/**
@@ -176,16 +160,14 @@ export default {
 		clickFilter: function(nm, item, index){
 			if(this.getChkSelFilter({'name': nm, 'id': item['dt_'+nm]})){	// 필터 제거
 				this.removeFilter({'name':nm, 'item': item});
-				$nuxt.$emit('search-search');
-				// this.$router.push( {path: '/search', query:this.makeParam});
+				this.$router.push( {path: '/search', query:this.makeParam});
 			}else{													// 필터 추가
 				// 구글 애널리틱스 추가
 				this.$sendGA(this,'검색결과 필터','클릭',nm, item['dt_'+nm]);
 
 				// 필터추가
 				this.addFilter({'name':nm, 'item': item});
-				$nuxt.$emit('search-search');
-				// this.$router.push( {path: '/search', query:this.makeParam});
+				this.$router.push( {path: '/search', query:this.makeParam});
 			}
 		},
 		/**
@@ -212,7 +194,7 @@ export default {
 		 */
 		resetFilter: function(){
 			this.allRemoveFilter();
-			$nuxt.$emit('search-search');
+			this.$router.push( {path: '/search', query:this.makeParam});
 		},
 		/**
 		 * [모바일] 필터 리스트 - 서브메뉴 on/off

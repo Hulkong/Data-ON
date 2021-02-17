@@ -49,7 +49,7 @@
         </el-col>
 
         <el-col :span="21" class="text-col">
-          <el-radio-group v-model="form.is_send_email" class="mg20r">
+          <el-radio-group v-model="form.is_send_email" class="mg20r" :disabled="getData(stateId).is_send_email">
             <el-radio :label="false" id="radio1">보내지 않기</el-radio>
             <el-radio :label="true">메일 보내기</el-radio>
           </el-radio-group>
@@ -66,14 +66,15 @@
         </el-col>
 
         <el-col :span="20" class="text-col">
-          <editor :model.sync="form.content" />
+          <span v-if="getData(stateId).is_send_email" v-html="this.$markToHtml(form.content)" class="markdown-body"></span>
+          <editor :value.sync="form.content" menu="inquire" v-if="!getData(stateId).is_send_email" />
         </el-col>
       </el-row>
     </el-form>
 
     <el-row class="mg40t tr">
       <el-col>
-        <el-button @click="onSubmit">저장</el-button>
+        <el-button v-if="!getData(stateId).is_send_email" @click="onSubmit">저장</el-button>
 
         <NuxtLink :to="{ path: '/admin/ntcBrd/usrCmn', query: listParam }">
           <el-button><i class="el-icon-document-copy" /> 목록</el-button>
@@ -93,6 +94,9 @@ export default {
       'getParam', // 상세내용의 param 세팅 가져오기
       'getUrl', // 상세내용의 url 가져오기
       'getData'
+    ]),
+    ...mapGetters('auth', [
+      'getAuth'
     ])
   },
   data() {
@@ -106,11 +110,10 @@ export default {
         id: '',
         type: 3,
         name: '관리자',
-        email: 'sales@openmate-on.co.kr',
+        email: '',
         content: '',
         is_send_email: false,
-        parent: '',
-        is_answer: true
+        parent: ''
       }
     }
   },
@@ -139,12 +142,13 @@ export default {
       const childDataArray = data.child
 
       this.form.parent = data.id
+      this.form.is_send_email = data.is_send_email
+      this.form.email = data.email
 
       if (childDataArray.length > 0) {
         const childData = childDataArray[0]
 
         this.form.id = childData.id
-        this.form.is_send_email = childData.is_send_email
         this.form.content = childData.content
       }
     },
@@ -154,15 +158,26 @@ export default {
       if (!form.content) {
         this.$alert('관리자 답변을 입력하세요.')
       } else {
+        form.question_content = this.getData(this.stateId).content
+        form.question_type = this.getData(this.stateId).type
+        form.email_content = this.$markToHtml(form.content)
+
         const posts = {
           'url': this.getUrl('detail'),
-          'param': form
+          'param': form,
+            'config': {
+              headers: {
+                'Authorization': 'Token ' + this.getAuth.token
+              }
+            }
         },
           id = this.form.id
 
         let result = null
 
         // 수정
+        this.$store._vm.$nuxt.$loading.start()
+
         if (id) {
           posts.url = posts.url + id + '/'
 
@@ -170,6 +185,8 @@ export default {
         } else { // 등록
           result = await this.setPost(posts)
         }
+
+        this.$store._vm.$nuxt.$loading.finish()
 
         if (result) {
           const this2 = this,
@@ -188,3 +205,5 @@ export default {
   }
 }
 </script>
+
+<style scoped src="../../../../assets/css/github-markdown.css" />

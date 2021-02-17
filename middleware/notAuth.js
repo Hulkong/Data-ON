@@ -1,5 +1,7 @@
 export default function ({ store, redirect }) {
-  if (store.state.auth.auth) {
+  const auth = store.state.auth.auth
+
+  if (auth && new Date(auth.expiry.substring(0, 19)) > new Date()) {
     return redirect('/admin')
   }
 }

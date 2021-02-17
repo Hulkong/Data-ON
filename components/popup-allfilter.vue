@@ -60,7 +60,7 @@ export default {
             'getAllFilterListNm',    // 필터 리스트 명    
         ]),
         makeParam: function(){
-			var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
+            var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
 			return this.$makeParam(allParam);
 		},
         // chkSelAllFilter: function(id){ // 선택리스트 확인
@@ -113,24 +113,12 @@ export default {
             if(this.filterList && this.filterList.length > 0){
                 let sortedArr = this.$twoArrSort(  this.filterList, 
                                                     "dt_"+this.getAllFilterItemId, 
-                                                    this.selectList, 
-                                                    "id"
+                                                    this.selectList
                                                 );
 
                 this.filterList = sortedArr.otherArr;
                 this.selectList = sortedArr.selArr;
             }
-
-            // 선택한 필터 리스트 (전체 필터 리스트와 같게 )형태변경
-            // if(this.selectList && this.selectList.length > 0){
-            //     this.selectList = this.selectList.map(sItem => {
-            //         let rsltObj = {};
-			// 		rsltObj['dt_'+this.getAllFilterItemId] = sItem.id;
-			// 		rsltObj['dt_'+this.getAllFilterItemId+'_nm'] = sItem.nm;
-			// 		rsltObj['max_count'] = sItem.cnt;
-			// 		return rsltObj;
-			// 	});
-			// }
         },
 
 
@@ -162,8 +150,7 @@ export default {
             }
             
             // 팝업 닫기
-            // this.$router.push( {path: '/search', query:this.makeParam});
-            $nuxt.$emit('search-search');	
+            this.$router.push( {path: '/search', query:this.makeParam});
             this.closePopAllFilter();
         },
         /**

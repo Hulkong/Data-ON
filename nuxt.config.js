@@ -46,12 +46,21 @@ export default {
     link: [{
       rel: 'icon',
       type: 'image/x-icon',
-      href: '/favicon.ico'
+      href: '/favicon.ico?v=1'
     }],
-    script: [{
-      src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit',
-      defer: true
-    }]
+    script: [
+      {
+        src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit',
+        defer: true
+      },
+      {
+        src: 'https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js',
+        charset: 'utf-8',
+      },
+      {
+        src: 'https://developers.kakao.com/sdk/js/kakao.js',
+      },
+    ]
   },
 
   loading: '~/components/loading.vue',
@@ -131,7 +140,9 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/google-gtag',
-    '@nuxtjs/robots'
+    '@nuxtjs/robots',
+    '@nuxtjs/gtm',
+    'nuxt-clipboard2'
   ],
   /**
    * robot: google, msn, naver, daum
@@ -166,26 +177,22 @@ export default {
   },
   'google-gtag': {
     // id: '255538273', // required
-    id: process.env.NODE_ENV !== 'production' ? '255538273' : '255653647', // required
+    id: process.env.NODE_ENV === 'production' ? 'UA-155901869-4' : 'G-D4RPQCKTBY', // required
     config: {
       // this are the config options for `gtag
       // check out official docs: https://developers.google.com/analytics/devguides/collection/gtagjs/
       anonymize_ip: true, // anonymize IP
       send_page_view: false, // might be necessary to avoid duplicated page track on page reload
       linker: {
-        domains: ['data-on.co.kr']
+        domains: ['data-on.co.kr', 'dev.openmate-on.co.kr']
       }
     },
     debug: true, // enable to track in dev mode
-    disableAutoPageTrack: false, // disable if you don't want to track each page route with router.afterEach(...)
-    // optional you can add more configuration like [AdWords](https://developers.google.com/adwords-remarketing-tag/#configuring_the_global_site_tag_for_multiple_accounts)
-    additionalAccounts: [{
-      // id: 'G-YQX8MQCG3Z', // required if you are adding additional IDs
-      id: process.env.NODE_ENV !== 'production' ? 'G-YQX8MQCG3Z' : 'G-DZD1V31WDH', // required if you are adding additional IDs
-      config: {
-        send_page_view: false // optional configurations
-      }
-    }]
+    disableAutoPageTrack: true, // disable if you don't want to track each page route with router.afterEach(...)
+  },
+  gtm: {
+    id: process.env.NODE_ENV === 'production' ? 'GTM-WX9D9S3' : 'GTM-52J5J2C',
+    enabled: true
   },
   proxy: {
     '/api/': {

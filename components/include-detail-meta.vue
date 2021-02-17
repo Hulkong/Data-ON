@@ -58,7 +58,6 @@
             <a  v-if="info.tbresultMeta"
                 href="javascript:void(0);"
                 @click="sendLink(info.tbresultMeta)"
-                target="_tab"
                 class="link-btn"
             >
                 <span>제공페이지로 이동</span>
@@ -82,7 +81,7 @@
 			this.$sendGA(this,'검색결과 자세히보기','링크연결', meta.info_url);
 
             // 페이지 이동
-            if(meta.info_url) window.open('about:tab').location.href=meta.info_url;
+            if(meta.info_url) window.open(meta.info_url);
             else return false;
         }
     }

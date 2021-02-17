@@ -6,84 +6,23 @@
 					<span>전체삭제</span>
 				</a>
 			</li>
-			<!-- s: filter 데이터 형식 -->
-			<li 
-				v-for="(dtype, dIdx) in getSelectFilter('type')"
-				:key = "'type_'+dIdx"
-				class="sel-data1"
-				data-select="data1"
-			>
-				<p>
-					{{$cutText(dtype.nm, '...', 6)}}
-					<button class="delete" @click="delFilter('type', dtype)">
-						<span class="blind">삭제</span>
-					</button>
-				</p>
-			</li>
-			<!-- e: filter 데이터 형식 -->
-			<!-- s: filter 공간단위 -->
-			<li 
-				v-for="(drange, dIdx) in getSelectFilter('range')"
-				:key = "'range_'+dIdx"
-				class="sel-data2"
-				data-select="data2"
-			>
-				<p>
-					{{$cutText(drange.nm, '...', 6)}}
-					<button class="delete" @click="delFilter('range', drange)">
-						<span class="blind">삭제</span>
-					</button>
-				</p>
-			</li>
-			<!-- e: filter 공간단위 -->
-			<!-- s: filter 분야 -->
-			<li 
-				v-for="(dcategory, dIdx) in getSelectFilter('category')"
-				:key = "'cate_'+dIdx"
-				class="sel-data3"
-				data-select="data3"
-			>
-				<p>
-					{{$cutText(dcategory.nm, '...', 6)}}
-					<!-- {{dcategory.nm}} -->
-					<button class="delete" @click="delFilter('category', dcategory)">
-						<span class="blind">삭제</span>
-					</button>
-				</p>
-			</li>
-			<!-- e: filter 분야 -->
-			<!-- s: filter 제공기관 -->
-			<li 
-				v-for="(dorgan, dIdx) in getSelectFilter('organ')"
-				:key = "'organ_'+dIdx"
-				class="sel-data4"
-				data-select="data4"
-			>
-				<p>
-					{{$cutText(dorgan.nm, '...', 6)}}
-					<!-- {{dorgan.nm}} -->
-					<button class="delete" @click="delFilter('organ', dorgan)">
-						<span class="blind">삭제</span>
-					</button>
-				</p>
-			</li>
-			<!-- e: filter 제공기관 -->
-			<!-- s: filter 컬럼 -->
-			<li 
-				v-for="(dcolumn, dIdx) in getSelectFilter('col')"
-				:key = "'col_'+dIdx"
-				class="sel-data5"
-				data-select="data5"
-			>
-				<p>
-					{{$cutText(dcolumn.nm, '...', 6)}}
-					<!-- {{dcolumn.nm}} -->
-					<button class="delete" @click="delFilter('col', dcolumn)">
-						<span class="blind">삭제</span>
-					</button>
-				</p>
-			</li>
-			<!-- e: filter 컬럼 -->
+			<!-- s: filter 데이터 형식, 컬럼명, 공간단위, 분야, 제공기관 -->
+			<template v-for="(fObj, fIdx) in getFilterNameList">
+				<li 
+					v-for="(dItem, dIdx) in getFilterNames[fObj.id]"
+					:key = "fObj.id+'_'+dIdx"
+					:class="'sel-data'+(fIdx+1)"
+					:data-select="'data1'+(fIdx+1)"
+				>
+					<p>
+						{{$cutText(dItem['dt_'+fObj.id+'_nm'], '...', 6)}}
+						<button class="delete" @click="delFilter(fObj.id, dItem['dt_'+fObj.id+'_nm'])">
+							<span class="blind">삭제</span>
+						</button>
+					</p>
+				</li>
+			</template>
+			<!-- e: filter 데이터 형식, 컬럼명, 공간단위, 분야, 제공기관 -->
 		</ul>
 	</div>
 </template>
@@ -94,7 +33,36 @@ export default {
 		...mapGetters('search',[
 			'getFilterCnt',				// 검색한 필터 수 가져오기
 			'getSelectFilter',			// 검색한 필터 구분별 리스트 가져오기
+			'getfilterList',				// 전체 필터 리스트 가져오기
+			'getFilterNameList'		 // filter 이름 리스트 가져오기
 		]),
+		getFilterNames: function(){
+			var list = _.cloneDeep(this.$store.getters['search/getFilterNameList']);
+			var result = {};
+			if(list.length > 0){
+				list.map(item =>{
+					var allList = _.cloneDeep(this.$store.getters['search/getFilterList'](item.list_id)); 
+					if(item.more_id) allList = _.cloneDeep(this.$store.getters['search/getFilterList'](item.more_id)); 
+					
+					var selList = _.cloneDeep(this.$store.getters['search/getSelectFilter'](item.id));
+					var resultArr = [];
+					
+					if(allList && allList.length > 0){
+						let sortedArr = this.$twoArrSort(allList, 
+														"dt_" + item.id, 
+														selList
+														);
+						if(sortedArr.selArr.length > 0) resultArr = sortedArr.selArr;
+					}
+					result[item.id] = resultArr;
+				});
+			}
+			return result;
+		},
+		makeParam: function(){
+			var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
+			return this.$makeParam(allParam);
+		},
 	},
 	mounted(){
 		// 선택한 필터 리스트 효과 ( top )
@@ -128,15 +96,16 @@ export default {
 			"allRemoveFilter"
 		]),	
 
+
 		delFilter: function(nm, item){
 			let obj = {};
-			obj['dt_'+nm] = item.id;
+			obj['dt_'+nm] = item;
 			this.removeFilter({'name':nm, 'item': obj});
-			$nuxt.$emit('search-search');
+			this.$router.push( {path: '/search', query:this.makeParam});
 		},
 		allDelFilter: function(){
 			this.allRemoveFilter();
-			$nuxt.$emit('search-search');
+			this.$router.push( {path: '/search', query:this.makeParam});
 		}
 	}
 }

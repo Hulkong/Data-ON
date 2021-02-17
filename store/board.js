@@ -77,10 +77,20 @@ export const getters = {
     },
     // element library 사용으로 공지 글, 일반 글 함께 조회
     getNoticeOneList: (state) => (id) => {
+      const totalCount = state[id].result.count,
+      cpage = state[id].param.page,
+      listsize = state[id].param.page_size
+
       let list = [],
         results = state[id].result.results
 
       if (results) {
+        results['notice_n_list'].map((obj, index) => {
+          obj.num = totalCount - ((cpage-1)*listsize) - index;
+
+          return obj
+        })
+
         list = [
           ...results['notice_y_list'],
           ...results['notice_n_list']
@@ -124,7 +134,8 @@ export const mutations = {
         state[obj.name].param.keyword = obj.keyword
     },
     setPage:(state, obj) => {
-        state[obj.name].param.page = obj.page
+        state[obj.name].param.page = obj.page;
+        obj.out = "succeed";
     },
 };
 

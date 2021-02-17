@@ -18,8 +18,7 @@
       </div>
       <div class="f-info">
         <p class="in-partner">
-          사업제휴 및 홍보문의.
-          <a href="mailto:sales@openmate-on.co.kr">sales@openmate-on.co.kr</a>
+          사업제휴 및 홍보문의. sales@openmate-on.co.kr
         </p>
         <p class="in-company">
           <span>(주)오픈메이트온</span>

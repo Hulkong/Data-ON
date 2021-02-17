@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <mavon-editor ref=md language="en" v-model="editor_model" @imgAdd="$imgAdd" />
+    <mavon-editor ref=md language="en" v-model="editor_value" @imgAdd="$imgAdd" />
   </client-only>
 </template>
 
@@ -13,18 +13,18 @@ export default {
       'getAuth'
     ])
   },
-  props: ['model'],
+  props: ['value', 'menu'],
   data() {
     return {
-      editor_model: ''
+      editor_value: ''
     }
   },
   watch: {
-    model: function() {
-      this.editor_model = this.model
+    value: function() {
+      this.editor_value = this.value
     },
-    editor_model: function() {
-      this.$emit('update:model', this.editor_model)
+    editor_value: function() {
+      this.$emit('update:value', this.editor_value)
     }
   },
   methods: {
@@ -34,7 +34,7 @@ export default {
       if ($file.name.includes(' ')) {
         let check_blank = false
 
-        this.editor_model = this.editor_model.replace('!['+$file._name+']('+pos+')', '')
+        this.editor_value = this.editor_value.replace('!['+$file._name+']('+pos+')', '')
 
         this.$alert('파일 이름에 공백이 포함될 수 없습니다.', {
           callback: function() {
@@ -50,9 +50,10 @@ export default {
       const formData = new FormData()
 
       formData.append('filename', $file)
+      formData.append('appname', this.menu)
 
       const posts = {
-          'url': '/api/notices/noticeImage/',
+          'url': '/api/files/imageUpload/',
           'param': formData,
           'config': {
             headers: {

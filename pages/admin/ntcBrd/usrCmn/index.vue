@@ -27,11 +27,11 @@
 
       <el-row>
         <el-col :span="4" class="header-col">
-          <label for="is_answer">답변상태</label>
+          <label for="is_send_email">답변상태</label>
         </el-col>
 
         <el-col :span="8">
-          <el-select v-model="params.is_answer" id="is_answer" size="small" class="w100p">
+          <el-select v-model="params.is_send_email" id="is_send_email" size="small" class="w100p">
             <el-option label="-- 전체 --" value="" />
             <el-option label="대기" value="False" />
             <el-option label="완료" value="True" />
@@ -87,17 +87,17 @@
         <el-table :data="getData(stateId)">
           <el-table-column label="답변상태" width="96" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.is_answer" class="ntxt">완료</span>
+              <span v-if="scope.row.is_send_email" class="ntxt">완료</span>
               <span v-else class="ntxt2">대기</span>
             </template>
           </el-table-column>
 
-          <el-table-column prop="hit" label="의견유형" width="79" align="center">
+          <el-table-column prop="hit" label="의견유형" width="118" align="center">
             <template slot-scope="scope">{{ $setComma(scope.row.type) }}</template>
           </el-table-column>
 
           <el-table-column label="번호" width="63" align="center">
-            <template slot-scope="scope">{{ scope.row.id }}</template>
+            <template slot-scope="scope">{{ scope.row.num }}</template>
           </el-table-column>
 
           <el-table-column label="이름" width="118" align="center">
@@ -142,7 +142,7 @@ export default {
     return {
       stateId: 'list',
       params: {
-        is_answer: '',
+        is_send_email: '',
         type: '',
         name: '',
         email: '',
@@ -157,6 +157,8 @@ export default {
     }
   },
   mounted() {
+    const page = this.$route.query.page ? this.$route.query.page : 1
+
     // querystring key loop
     for (const param of Object.entries(this.$route.query)) {
       // params 내 값 확인
@@ -165,6 +167,18 @@ export default {
         this.params[param[0]] = param[1]
       }
     }
+
+    // 검색 조건 저장
+    this.setParam({
+      name: this.stateId,
+      param: this.params
+    })
+
+    // 검색 조건 저장
+    this.setPage({
+      name: this.stateId,
+      page: page
+    })
 
     // 공지사항 리스트 가져오기
     this.fetchData()

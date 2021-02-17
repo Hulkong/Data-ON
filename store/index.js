@@ -19,7 +19,8 @@ export const actions = {
         return new Promise( function(resolve, reject){
             axios
             .get(posts.url,{
-                params: posts.param
+                params: posts.param,
+                headers: posts.headers
             })
             .then(res => {
                 // console.log(res);
@@ -93,20 +94,58 @@ export const actions = {
       return []
     })
   },
-  nuxtServerInit({ commit }, { req }) {
-    let auth = null
+  setDelete({ commit }, posts) {
+    const axios = this.$axios
 
+    return new Promise( function(resolve, reject){
+      axios
+        .delete(
+          posts.url,
+          posts.config
+        )
+        .then(res => {
+          resolve(res)
+        })
+        .catch(e => {
+          console.log(e)
+
+          if (!e.response || !e.response.status) {
+            return
+          }
+
+          reject(({ statusCode: e.response.status, message: '' }))
+        })
+    }).catch(e => {
+      console.log(e)
+
+      return []
+    })
+  },
+  nuxtServerInit({ commit, dispatch }, { req }) {
     if (req.headers.cookie) {
       const parsed = cookieparser.parse(req.headers.cookie)
 
-      try {
-        auth = JSON.parse(parsed.auth)
-      } catch (err) {
-        // No valid cookie found
+      if (parsed && parsed.auth) {
+        const auth = JSON.parse(parsed.auth)
+
+        if (new Date(auth.expiry.substring(0, 19)) > new Date()) {
+          try {
+            const posts = {
+              'url': '/api/users/auth/user/',
+              'headers': {
+                'Authorization': 'Token ' + auth.token
+              }
+            }
+
+            if (dispatch('setData', posts)) {
+              commit('auth/setAuth', auth)
+            }
+          } catch (err) {
+            console.log(err)
+          }
+        }
       }
     }
-
-    commit('auth/setAuth', auth)
   }
 };
 

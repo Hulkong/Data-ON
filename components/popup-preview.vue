@@ -7,7 +7,7 @@
         </div>
         <div class="is-con">
             <div class="info">
-                <h3 v-html="getPreviewInfo.dt_title"></h3> 
+                <h3 v-html="getPreviewInfo.dt_title"></h3>
                 <ul>
                     <li>
                         <p class="btxt">용량</p>
@@ -40,8 +40,8 @@
                 <loading-preview :loading="getPreLoading"></loading-preview>
                 <table v-if="getPreviewSampleHeader !== undefined && getPreviewSampleData.length > 0">
                     <colgroup>
-                        <col v-for="(item, index) in getPreviewSampleHeader" 
-                             :key="index" 
+                        <col v-for="(item, index) in getPreviewSampleHeader"
+                             :key="index"
                              :width="(100/(getPreviewSampleHeader.length))+'%'"
                         />
                     </colgroup>
@@ -71,12 +71,12 @@
                 </table>
             </div>
         </div>
-        
+
         <div class="is-btm">
             <a  v-if="getPreviewInfo.tbattachFiles.length > 0"
-                href="javascript:void(0);" 
+                href="javascript:void(0);"
                 @click="$downloadFile(getPreviewInfo.tbattachFiles,downCallback)"
-                class="down-btn preview-close" 
+                class="down-btn preview-close"
                 :class="(getPreviewInfo.dt_type?getPreviewInfo.dt_type.toLowerCase():'')"
             >
                 <span>{{getPreviewInfo.dt_type.toUpperCase()}}</span>
@@ -95,14 +95,14 @@ export default {
            'getPreviewId',              // 선택한 데이터의 id
            'getPreviewUrl',             // 미리보기 데이터 가져올 url
            'getPreviewInfoLen',         // 데이터 요약정보 존재 유무
-           'getPreviewInfo',            // 데이터 요약정보 
+           'getPreviewInfo',            // 데이터 요약정보
            'getPreviewSampleHeader',    // 샘플데이터(파일 내용) - header
            'getPreviewSampleData'           // 샘플데이터(파일 내용) - 내용
        ]),
     },
     data() {
 		return {
-            name: 'preview',				    // 페이지 명 
+            name: 'preview',				    // 페이지 명
 		}
     },
     mounted: function(){
@@ -132,7 +132,7 @@ export default {
             var posts = {};
             posts.url = this.getPreviewUrl + this.getPreviewId;
             this.getPreviewData(posts);
-            
+
         },
         downCallback: function(file){
             // 구글 애널리틱스 추가
@@ -152,4 +152,8 @@ export default {
 
 .layer-wrap.preview .nscrolls table.nodata {width:100% !important;}
 .layer-wrap.preview .nscrolls table.nodata tbody tr td{ border: 0px;}
+
+.layer-wrap.preview .nscrolls thead th {
+  min-width: 150px;
+}
 </style>

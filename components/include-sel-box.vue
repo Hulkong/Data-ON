@@ -30,6 +30,10 @@ export default {
 			'getMobileOrderBoxOn', 			 // on/off
 			'getOrderby',				// 선택한 정렬순 가져오기 ('accuracy', 'dt_down', 'dt_date', 'dt_byte')
 		]),
+		makeParam: function(){
+			var allParam = _.cloneDeep(this.$store.getters['search/getParam']);
+			return this.$makeParam(allParam);
+		},
 		
 	},
 	data: function(){
@@ -62,8 +66,8 @@ export default {
 		selClose: function(){
 			this.setMobileOrderBoxOn(false);
 			$nuxt.$emit('default-fog', false, 'pop');
-			$nuxt.$emit('search-search');
-
+			
+			this.$router.push( {path: '/search', query:this.makeParam});
 		}
 	}
 }

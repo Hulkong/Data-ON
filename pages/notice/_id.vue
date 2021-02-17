@@ -38,7 +38,7 @@
                     </ul>
                 </div>
                 <div class="txt">
-                    <p v-html="chngHtml(getDetailResult(name).content)"></p>
+                    <p class="markdown-body" v-html="chngHtml(getDetailResult(name).content)"></p>
                     <!-- <p>
                     {{getDetailResult(name).content}}
                     </p> -->
@@ -129,6 +129,7 @@ export default {
 }
 </script> 
 <style scoped src="../../assets/css/content.css"></style>
+<style scoped src="../../assets/css/github-markdown.css"></style>
 <style scoped>
 .txt >>> img {max-width: 100%; height:auto;}
 </style>
