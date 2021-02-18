@@ -1,46 +1,64 @@
 <template>
   <div id="event-cardlist">
     <div class="event-cardlist__flex">
-      <div class="event-cardlist__flex__header">Step 01</div>
+      <div class="event-cardlist__flex__header">
+        <p class="event-cardlist__flex__header__text">Step 01</p>
+      </div>
       <div class="event-cardlist__flex__contents">
-        아래 소문글을 복사해주세요.
+        <p class="event-cardlist__flex__contents__text">
+          아래 소문글을 <br />복사해주세요.
+        </p>
       </div>
       <div
-        class="event-cardlist__flex__button--copy"
+        class="event-cardlist__flex__button"
         v-clipboard:copy="message"
         v-clipboard:success="onCopy"
         v-clipboard:error="onError"
       >
-        소문글 복사하기
+        <p class="event-cardlist__flex__button__text __copy">
+          <strong>소문글</strong> 복사하기
+        </p>
       </div>
     </div>
     <div class="event-cardlist__flex">
-      <div class="event-cardlist__flex__header">Step 02</div>
+      <div class="event-cardlist__flex__header">
+        <p class="event-cardlist__flex__header__text">Step 02</p>
+      </div>
       <div class="event-cardlist__flex__contents">
-        <p>
+        <p class="event-cardlist__flex__contents__text">
           소문내기 이미지를<br />
           다운받기 해주세요
         </p>
       </div>
-      <div class="event-cardlist__flex__button--copy">
-        <a href="/images/ask/bt-inquire.png" download>이미지 다운로드</a>
-      </div>
-    </div>
-    <div class="event-cardlist__flex">
-      <div class="event-cardlist__flex__header">Step 03</div>
-      <div class="event-cardlist__flex__contents">
-        <p>
-          본인의 SNS나 카페 등<br />
-          커뮤니티에 복사한 글과 이미지를<br />
-          활용하여 소문내주세요.<br />
-          (*전체공개 필수)
+      <div class="event-cardlist__flex__button">
+        <p class="event-cardlist__flex__button__text __download">
+          <a href="/images/ask/bt-inquire.png" download>
+            <strong>이미지</strong> 다운로드
+          </a>
         </p>
       </div>
     </div>
     <div class="event-cardlist__flex">
-      <div class="event-cardlist__flex__header">Step 04</div>
+      <div class="event-cardlist__flex__header">
+        <p class="event-cardlist__flex__header__text">Step 03</p>
+      </div>
       <div class="event-cardlist__flex__contents">
-        <p>
+        <p class="event-cardlist__flex__contents__text">
+          본인의 SNS나 카페 등<br />
+          커뮤니티에 복사한 글과 이미지를<br />
+          활용하여 소문내주세요.<br />
+          <span class="event-cardlist__flex__contents__text__empasiz"
+            >(*전체공개 필수)</span
+          >
+        </p>
+      </div>
+    </div>
+    <div class="event-cardlist__flex">
+      <div class="event-cardlist__flex__header">
+        <p class="event-cardlist__flex__header__text">Step 04</p>
+      </div>
+      <div class="event-cardlist__flex__contents">
+        <p class="event-cardlist__flex__contents__text">
           업로드한 게시글의 URL을<br />
           아래 링크 입력란에<br />
           등록 해주세요.
@@ -102,35 +120,83 @@ DATA-ON 을 소개합니다.​
 </script>
 
 <style scoped>
+a {
+  color: inherit;
+}
+
 #event-cardlist {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-
-  margin-top: 6rem;
   text-align: center;
-  font: normal normal normal 20px/40px Noto Sans CJK KR;
-  letter-spacing: -0.9px;
-  color: #333333;
+  justify-content: space-between;
 }
 
 .event-cardlist__flex {
-  width: 25vh;
-  height: 25vh;
-  margin: 0 auto;
-  border-radius: 15vh;
-  background: #ffffff 0% 0% no-repeat padding-box;
+  position: relative;
+  width: 15vw;
+  height: 15vw;
+  min-width: 160px;
+  min-height: 160px;
+  border-radius: 15vw;
+  background: #ffffff;
   box-shadow: 3px 6px 6px #00000029;
 }
 
 .event-cardlist__flex__header {
-  padding: 5px 0;
-  width: 70px;
-  background: #0062ac 0% 0% no-repeat padding-box;
-  border: 3px solid #ffffff;
+  position: absolute;
+  width: 100%;
+  margin-top: -13px;
+}
+
+.event-cardlist__flex__header__text {
+  padding: 3px 0;
+  width: 82px;
+  background: #0062ac;
+  border: 2px solid #ffffff;
   border-radius: 28px;
   margin: 0 auto;
-  margin-top: -13px;
-  display: block;
+}
+
+.event-cardlist__flex__contents {
+  display: table;
+  width: 100%;
+  height: 100%;
+  color: #333333;
+}
+
+.event-cardlist__flex__contents__text {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.event-cardlist__flex__contents__text__empasiz {
+  color: #1982c7;
+}
+
+.event-cardlist__flex__button {
+  padding-bottom: 12%;
+  height: 33%;
+  width: 78%;
+  display: table;
+  margin: 0 auto;
+  margin-top: -25%;
+  background: #0075c1;
+  border-radius: 5px;
+}
+
+.event-cardlist__flex__button__text {
+  border-radius: 5px;
+  display: table-cell;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.event-cardlist__flex__button__text.__copy {
+  background: #2c3a68;
+}
+
+.event-cardlist__flex__button__text.__download {
+  background: #9f4a00;
 }
 </style>
