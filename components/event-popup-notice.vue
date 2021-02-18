@@ -29,14 +29,14 @@ export default {
 
 <style scoped>
 .event__popup {
-  position: fixed;
+  position: absolute;
   left: 25vw;
   top: 25vh;
   margin: auto;
   width: 50%;
-  border: 3px solid green;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 2px 2px 2px 2px grey;
+  color: #333;
 }
 </style>

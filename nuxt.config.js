@@ -142,7 +142,8 @@ export default {
     '@nuxtjs/google-gtag',
     '@nuxtjs/robots',
     '@nuxtjs/gtm',
-    'nuxt-clipboard2'
+    'nuxt-clipboard2',
+    ['vue-scrollto/nuxt', { duration: 300 }]
   ],
   /**
    * robot: google, msn, naver, daum

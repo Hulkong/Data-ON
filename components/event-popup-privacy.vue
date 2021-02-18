@@ -1,5 +1,6 @@
 <template>
   <div v-show="willYouSeeIt" class="event__popup--privacy">
+    {{ url }}
     <p class="event__popup--privacy__header">
       이벤트 응모를 위한 개인정보를 입력해주세요.
     </p>
@@ -93,6 +94,11 @@ export default {
       type: Boolean,
       default: true,
     },
+
+    url: {
+      type: String,
+      default: ""
+    }
   },
 
   computed: {
@@ -118,8 +124,8 @@ export default {
 
   methods: {
     close() {
-      this.init();
       this.$emit("close-popup-privacy");
+      this.init();
     },
 
     init() {
@@ -134,10 +140,29 @@ export default {
       if (!this.phoneNumber) return this.$emit("participate", "fail");
       if (!this.agreement) return this.$emit("participate", "fail");
 
-      this.init();
+      this.save({
+        url: this.url,
+        phone_number: this.phoneNumber,
+        name: this.name
+      })
       this.$emit("participate", "success");
       this.$emit("close-popup-privacy");
+      this.init();
     },
+
+    /**
+     * @description request to server
+     * @param {Object} params request parameters
+     * @returns {Promise}
+     */
+    save(params = {}) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post("/api/event/v1/", params)
+          .then((response) => resolve(response.data))
+          .catch((error) => reject(error));
+      });
+    }
   },
 };
 </script>

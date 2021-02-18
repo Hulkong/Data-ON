@@ -13,6 +13,7 @@
       <event-link
         @not-register="validate"
         @register="changePopupState({ willYouSeePrivacy: true })"
+        @send-url="sendUrl"
       ></event-link>
     </div>
     <event-popup-notice
@@ -22,30 +23,33 @@
     ></event-popup-notice>
     <event-popup-privacy
       :willYouSeeIt="willYouSeeIt.privacy"
+      :url="url"
       @participate="validate"
       @close-popup-privacy="willYouSeeIt.privacy = false"
     ></event-popup-privacy>
     <div class="container--event__footer">
-      <p class="container--event__footer__title">유의사항</p>
-      <p class="container--event__footer__subtitle">
-        - 참여여부를 확인할 수 있게 게시글은 참여기간 동안 전체공개 필수
-      </p>
-      <p class="container--event__footer__subtitle">
-        - 비로그인 상태에서도 확인 가능한 게시글만 인정
-      </p>
-      <p class="container--event__footer__subtitle">
-        - 중복 참여 가능하나, 동일한 URL로 중복 참여 불가
-      </p>
-      <p class="container--event__footer__subtitle">
-        - 이벤트 경품은 내부 사정에 의해 동일한 가격대의 다른 상품으로 대체될 수
-        있음
-      </p>
-      <p class="container--event__footer__subtitle">
-        - 경품발송 시 입력한 핸드폰 번호로 발송되며, 번호 변경 및 재발송 불가
-      </p>
-      <p class="container--event__footer__subtitle">
-        - 기프티콘은 유효기간 연장 불가, 타상품으로 변경 요청 불가
-      </p>
+      <div class="container--event__footer__contents">
+        <p class="container--event__footer__title">유의사항</p>
+        <p class="container--event__footer__subtitle">
+          - 참여여부를 확인할 수 있게 게시글은 참여기간 동안 전체공개 필수
+        </p>
+        <p class="container--event__footer__subtitle">
+          - 비로그인 상태에서도 확인 가능한 게시글만 인정
+        </p>
+        <p class="container--event__footer__subtitle">
+          - 중복 참여 가능하나, 동일한 URL로 중복 참여 불가
+        </p>
+        <p class="container--event__footer__subtitle">
+          - 이벤트 경품은 내부 사정에 의해 동일한 가격대의 다른 상품으로 대체될 수
+          있음
+        </p>
+        <p class="container--event__footer__subtitle">
+          - 경품발송 시 입력한 핸드폰 번호로 발송되며, 번호 변경 및 재발송 불가
+        </p>
+        <p class="container--event__footer__subtitle">
+          - 기프티콘은 유효기간 연장 불가, 타상품으로 변경 요청 불가
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -83,6 +87,8 @@ export default {
           등록하기 버튼을 눌러주세요.
           `,
       },
+
+      url: null
     };
   },
 
@@ -129,40 +135,42 @@ export default {
           break;
       }
     },
+
+    sendUrl(url = null) {
+      if(!url) return;
+
+      this.url = url;
+    }
   },
 };
 </script>
 
 <style scoped>
 #container--event {
-  min-width: 1025px;
+  position: relative;
   text-align: center;
   color: #fff;
-  /* padding: 0 5rem; */
 }
 
 .container--event__description {
-  background: #0075c1;
-  height: 80vh;
-  max-height: 613px;
+  height: 70vh;
+  max-height: 655px;
   min-height: 613px;
-  padding: 0 14%;
+  padding: 5.3rem 14%;
+  box-sizing: border-box;
+  background: #0075c1;  
 }
 
 .container--event__link {
-  height: 20vh;
-  max-height: 153px;
+  height: 30vh;
+  max-height: 282px;
   min-height: 153px;
+  padding: 3.6rem 14%;
+  box-sizing: border-box;
   background: #ffffff;
 }
 
-.container--event__footer {
-  background: #eeeeee;
-  color: #333333;
-}
-
 .container--event__title {
-  margin-top: 7rem;
   display: inline-block;
   font-size: 4rem;
   line-height: 4rem;
@@ -171,5 +179,20 @@ export default {
 .container--event__subtitle {
   margin: 2rem 0 5rem 0;
   font-size: 1.25rem;
+}
+
+.container--event__footer {
+  background: #eeeeee;
+  color: #333333;
+  height: 25vh;
+  display: table;
+  width: 100%;
+  text-align: left;
+}
+
+.container--event__footer__contents {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0 14%;
 }
 </style>

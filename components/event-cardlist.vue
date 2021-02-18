@@ -32,7 +32,7 @@
       </div>
       <div class="event-cardlist__flex__button">
         <p class="event-cardlist__flex__button__text __download">
-          <a href="/images/ask/bt-inquire.png" download>
+          <a href="/images/event/img_event_01.png" download="event_image.png">
             <strong>이미지</strong> 다운로드
           </a>
         </p>
@@ -136,8 +136,8 @@ a {
   position: relative;
   width: 15vw;
   height: 15vw;
-  min-width: 160px;
-  min-height: 160px;
+      min-width: 200px;
+    min-height: 200px;
   border-radius: 15vw;
   background: #ffffff;
   box-shadow: 3px 6px 6px #00000029;
